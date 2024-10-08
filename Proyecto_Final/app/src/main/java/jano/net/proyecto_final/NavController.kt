@@ -13,5 +13,6 @@ fun Nav() {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomePageScreen(navController) }
         composable("tareas") { (tareasScreen(navController)) }
+        composable("notas") { (notasScreen(navController)) }
     }
 }
