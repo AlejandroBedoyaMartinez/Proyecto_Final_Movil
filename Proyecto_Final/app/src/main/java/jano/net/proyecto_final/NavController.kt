@@ -14,5 +14,6 @@ fun Nav() {
         composable("home") { HomePageScreen(navController) }
         composable("tareas") { (tareasScreen(navController)) }
         composable("notas") { (notasScreen(navController)) }
+        composable("agregarNueva") { (AgregarNueva()) }
     }
 }
