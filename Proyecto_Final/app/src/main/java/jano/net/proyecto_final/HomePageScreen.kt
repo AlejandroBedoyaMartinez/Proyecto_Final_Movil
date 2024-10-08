@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,13 +39,14 @@ import jano.net.proyecto_final.ui.theme.Typography
 import androidx.navigation.NavHostController
 
 @Composable
-fun HomePageScreen(navHostController: NavHostController,modifier: Modifier = Modifier.fillMaxWidth()) {
+fun HomePageScreen(navHostController: NavHostController) {
 
     Column (modifier = Modifier
-        .fillMaxWidth()
-        .padding(35.dp, 40.dp)
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
     ){
-        Row(modifier = Modifier.padding(start = 28.dp)) {
+        Row(modifier = Modifier.padding(top = 45.dp
+            ,start = 28.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.usuario),
                 contentDescription = "ImagenUsuario",
@@ -54,13 +56,15 @@ fun HomePageScreen(navHostController: NavHostController,modifier: Modifier = Mod
                 text = "Bienvenido",
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(start = 15.dp)
+                    .padding(start = 15.dp),
+                color = MaterialTheme.colorScheme.surface
             )
         }
         Text(
             text = "Homepage",
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            style = Typography.titleLarge
+            style = Typography.titleLarge,
+            color = MaterialTheme.colorScheme.surface
         )
         Row (
             modifier = Modifier
@@ -90,9 +94,10 @@ fun HomePageScreen(navHostController: NavHostController,modifier: Modifier = Mod
         Spacer(modifier = Modifier.height(28.dp))
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .height(200.dp)
                 .border(BorderStroke(2.dp, Color.Gray))
+                .width(310.dp)
+                .align(Alignment.CenterHorizontally)
         ) {
             Column {
                 Text(

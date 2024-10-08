@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -42,17 +43,20 @@ fun tareasScreen(navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(35.dp, 40.dp)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        BuscarText(query = query, onQueryChanged = { query = it })
+        Row (Modifier.padding(top = 25.dp)) {
+            BuscarText(query = query, onQueryChanged = { query = it })
+        }
 
         Box(
             modifier = Modifier
                 .height(650.dp)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .align(Alignment.CenterHorizontally)
                 .border(BorderStroke(2.dp, Color.Black))
                 .fillMaxWidth()
+                .padding(35.dp, 40.dp)
         ) {
             Column(
                 Modifier

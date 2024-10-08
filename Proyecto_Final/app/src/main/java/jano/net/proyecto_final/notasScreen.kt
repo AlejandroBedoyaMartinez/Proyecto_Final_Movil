@@ -44,15 +44,17 @@ fun notasScreen(navHostController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 50.dp)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(0.dp, 10.dp)
+                .padding(10.dp, 10.dp)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            BuscarText(query = query, onQueryChanged = { query = it })
-
+            Row (Modifier.padding(top = 25.dp)) {
+                BuscarText(query = query, onQueryChanged = { query = it })
+            }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
@@ -72,7 +74,7 @@ fun notasScreen(navHostController: NavHostController) {
             onClick = { navHostController.navigate("agregarNueva") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(40.dp)
                 .zIndex(1f),
             colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
             shape = RoundedCornerShape(1.dp),
