@@ -12,6 +12,6 @@ fun Nav() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomePageScreen(navController) }
-
+        composable("tareas") { (tareasScreen(navController)) }
     }
 }
