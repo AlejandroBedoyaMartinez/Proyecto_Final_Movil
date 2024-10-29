@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "jano.net.proyecto_final"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "jano.net.proyecto_final"
@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
