@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,12 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavHostController
 
 
 @Composable
-fun tareasScreen(navHostController: NavHostController) {
-    var query by remember { mutableStateOf("") }
+fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
 
     Column(
         modifier = Modifier
@@ -46,17 +47,16 @@ fun tareasScreen(navHostController: NavHostController) {
             .background(MaterialTheme.colorScheme.background)
     ) {
         Row (Modifier.padding(top = 25.dp)) {
-            BuscarText(query = query, onQueryChanged = { query = it })
+            BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
         }
 
         Box(
             modifier = Modifier
-                .height(650.dp)
+                .height(680.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .align(Alignment.CenterHorizontally)
                 .border(BorderStroke(2.dp, Color.Black))
-                .fillMaxWidth()
-                .padding(35.dp, 40.dp)
+                .width(330.dp)
         ) {
             Column(
                 Modifier
@@ -141,9 +141,10 @@ fun BuscarText(
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Gray,
-            unfocusedBorderColor = Color.Gray,
-            cursorColor = Color.Gray,
-        )
+            focusedBorderColor = MaterialTheme.colorScheme.surface,
+            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+            cursorColor = MaterialTheme.colorScheme.surface,
+        ),
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.surface)
     )
 }

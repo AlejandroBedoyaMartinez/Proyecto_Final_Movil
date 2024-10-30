@@ -35,9 +35,8 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgregarNueva(
-){
-    var posponer by remember { mutableStateOf(false) }
+fun AgregarNueva(viewModel: viewModel){
+    var posponer by remember { mutableStateOf(true) }
     Column (
         Modifier
             .fillMaxSize()
@@ -45,23 +44,31 @@ fun AgregarNueva(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier.height(50.dp))
-        TextField(value = "Titulo", onValueChange = {},
+        TextField(
+            value = viewModel.titulo.value, onValueChange = { viewModel.titulo.value = it},
+            placeholder = { Text(text = "Ingrese el título") },
             modifier = Modifier
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.surface,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
         Row (
             Modifier
                 .align(Alignment.End)
                 .padding(end = 50.dp)){
-            Text(text = "Convertir a ",Modifier.align(Alignment.CenterVertically))
+            Text(
+                text = "Convertir a ",
+                Modifier.align(Alignment.CenterVertically),
+                color = MaterialTheme.colorScheme.surface
+            )
             Switch(
-
-                checked = true,
-                onCheckedChange = {},
+                checked = viewModel.banderaSwitch.value,
+                onCheckedChange = {viewModel.banderaSwitch.value = it},
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
                     checkedTrackColor = Color.Gray,
@@ -71,32 +78,46 @@ fun AgregarNueva(
             )
         }
         TextField(
-            value = "Descripcion de", onValueChange = {},
+            value = viewModel.descripcion.value, onValueChange = { viewModel.descripcion.value = it},
+            placeholder = { Text(text = "Ingrese la descripcion") },
             modifier = Modifier
                 .height(100.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.surface,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
-        TextField(value = "Descripcion", onValueChange = {},
+        TextField(
+            value = viewModel.descripcionCuerpo.value, onValueChange = { viewModel.descripcionCuerpo.value = it},
+            placeholder = { Text(text = "Cuerpo") },
             modifier = Modifier
                 .height(250.dp)
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.surface,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
-        TextField(value = "Texto", onValueChange = {},
+        TextField(
+            value = viewModel.texto.value, onValueChange = { viewModel.texto.value = it},
+            placeholder = { Text(text = "Ingrese el texto") },
             modifier = Modifier
                 .height(250.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.surface,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
         Row (
@@ -134,12 +155,16 @@ fun AgregarNueva(
                 )
             }
 
-
-            if(posponer) {
-                PosponerTarea(onDismiss = { posponer = false })
+            if(posponer and viewModel.banderaSwitch.value) {
+                PosponerTarea( onDismiss = { posponer = false })
             }
+
             Button(
-                onClick = { posponer = true},
+                onClick = {
+                    if(viewModel.banderaSwitch.value == true) {
+                        posponer = true
+                    }
+                   },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White
                 ),

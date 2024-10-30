@@ -117,7 +117,7 @@ fun HomePageScreen(navHostController: NavHostController) {
         Spacer(modifier = Modifier.height(32.dp))
 
         FloatingActionButton(
-            onClick = {  },
+            onClick = { navHostController.navigate("agregarNueva") },
             modifier = Modifier
                 .size(60.dp)
                 .align(Alignment.CenterHorizontally)

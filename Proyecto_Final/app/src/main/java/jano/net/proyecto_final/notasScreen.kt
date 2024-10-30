@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
@@ -38,8 +37,7 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun notasScreen(navHostController: NavHostController) {
-    var query by remember { mutableStateOf("") }
+fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
 
     Box(
         modifier = Modifier
@@ -53,7 +51,7 @@ fun notasScreen(navHostController: NavHostController) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Row (Modifier.padding(top = 25.dp)) {
-                BuscarText(query = query, onQueryChanged = { query = it })
+                BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
