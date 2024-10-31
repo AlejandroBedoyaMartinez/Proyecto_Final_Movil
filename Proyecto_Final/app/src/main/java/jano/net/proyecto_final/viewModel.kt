@@ -10,6 +10,4 @@ class viewModel:ViewModel() {
     var descripcionCuerpo = mutableStateOf("")
     var texto = mutableStateOf("")
     var banderaSwitch = mutableStateOf(false)
-
-
 }

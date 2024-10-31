@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 
@@ -78,7 +79,7 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
             shape = RoundedCornerShape(1.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text(text = "Agregar nueva", color = Color.Black)
+            Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
         }
     }
 }

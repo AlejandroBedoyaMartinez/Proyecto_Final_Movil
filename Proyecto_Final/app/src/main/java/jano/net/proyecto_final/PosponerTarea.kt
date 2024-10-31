@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ fun PosponerTarea(onDismiss: () -> Unit) {
         ) {
             Column(
             ) {
-                Text(text = "Posponer Tarea:", Modifier
+                Text(text = stringResource(R.string.posponer_tarea), Modifier
                     .fillMaxWidth()
                     .background(Color.LightGray)
                     .height(40.dp)
@@ -49,11 +50,11 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         .padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = "Nueva Fecha de inicio:",
+                        text = stringResource(R.string.nueva_fecha_de_inicio),
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
-                        value = "pick date",
+                        value = stringResource(R.string.elegir_fecha),
                         onValueChange = {},
                         modifier = Modifier.weight(1f),
                         readOnly = true,
@@ -80,11 +81,11 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         .padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = "Nueva Fecha de Fin:",
+                        text = stringResource(R.string.nueva_fecha_de_fin),
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
-                        value = "pick date",
+                        value = stringResource(R.string.elegir_fecha),
                         onValueChange = { },
                         modifier = Modifier.weight(1f),
                         readOnly = true,
@@ -113,11 +114,12 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         checked = false,
                         onCheckedChange = { /* TODO */ }
                     )
-                    Text(text = "Recordarme",Modifier.align(Alignment.CenterVertically))
+                    Text(text = stringResource(R.string.recordarme),Modifier.align(Alignment.CenterVertically))
                 }
 
                 Row (
-                    Modifier.padding( horizontal = 16.dp)
+                    Modifier
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ){
@@ -131,7 +133,7 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         )
                     ) {
                         Text(
-                            text = "Guardar",
+                            text = stringResource(R.string.guardar),
                             fontSize = 16.sp,
                             color = Color.Black
                         )

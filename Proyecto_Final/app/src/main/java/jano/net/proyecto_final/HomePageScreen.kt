@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,7 +54,7 @@ fun HomePageScreen(navHostController: NavHostController) {
                 modifier = Modifier.size(60.dp)
             )
             Text(
-                text = "Bienvenido",
+                text = stringResource(R.string.bienvenido),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(start = 15.dp),
@@ -61,7 +62,7 @@ fun HomePageScreen(navHostController: NavHostController) {
             )
         }
         Text(
-            text = "Homepage",
+            text = stringResource(R.string.pagina_de_inicio),
             modifier = Modifier.align(Alignment.CenterHorizontally),
             style = Typography.titleLarge,
             color = MaterialTheme.colorScheme.surface
@@ -78,7 +79,7 @@ fun HomePageScreen(navHostController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(2.dp, Color.Black)
             ) {
-                Text(text = "Tareas", color = Color.Black)
+                Text(text = stringResource(R.string.tareas), color = Color.Black)
             }
 
             Button(
@@ -88,7 +89,7 @@ fun HomePageScreen(navHostController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(2.dp, Color.Black)
             ) {
-                Text(text = "Notas", color = Color.Black)
+                Text(text = stringResource(R.string.notas), color = Color.Black)
             }
         }
         Spacer(modifier = Modifier.height(28.dp))
@@ -101,7 +102,7 @@ fun HomePageScreen(navHostController: NavHostController) {
         ) {
             Column {
                 Text(
-                    text = "Proximos eventos este mes",
+                    text = stringResource(R.string.proximos_eventos_del_mes),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.LightGray)

@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -46,7 +47,7 @@ fun AgregarNueva(viewModel: viewModel){
         Spacer(modifier = Modifier.height(50.dp))
         TextField(
             value = viewModel.titulo.value, onValueChange = { viewModel.titulo.value = it},
-            placeholder = { Text(text = "Ingrese el título") },
+            placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
@@ -57,12 +58,16 @@ fun AgregarNueva(viewModel: viewModel){
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
+        var texto:String = stringResource(R.string.convertir_a_nota);
+        if(viewModel.banderaSwitch.value){
+            texto = stringResource(R.string.convertir_a_tarea);
+        }
         Row (
             Modifier
                 .align(Alignment.End)
                 .padding(end = 50.dp)){
             Text(
-                text = "Convertir a ",
+                text = texto,
                 Modifier.align(Alignment.CenterVertically),
                 color = MaterialTheme.colorScheme.surface
             )
@@ -79,7 +84,7 @@ fun AgregarNueva(viewModel: viewModel){
         }
         TextField(
             value = viewModel.descripcion.value, onValueChange = { viewModel.descripcion.value = it},
-            placeholder = { Text(text = "Ingrese la descripcion") },
+            placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
             modifier = Modifier
                 .height(100.dp)
                 .background(Color.White)
@@ -93,7 +98,7 @@ fun AgregarNueva(viewModel: viewModel){
         )
         TextField(
             value = viewModel.descripcionCuerpo.value, onValueChange = { viewModel.descripcionCuerpo.value = it},
-            placeholder = { Text(text = "Cuerpo") },
+            placeholder = { Text(text = stringResource(R.string.cuerpo)) },
             modifier = Modifier
                 .height(250.dp)
                 .padding(top = 10.dp)
@@ -108,7 +113,7 @@ fun AgregarNueva(viewModel: viewModel){
         )
         TextField(
             value = viewModel.texto.value, onValueChange = { viewModel.texto.value = it},
-            placeholder = { Text(text = "Ingrese el texto") },
+            placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
                 .height(250.dp)
                 .background(Color.White)
@@ -134,7 +139,7 @@ fun AgregarNueva(viewModel: viewModel){
                 border = BorderStroke(2.dp, Color.Black)
             ) {
                 Text(
-                    text = "Tomar Foto",
+                    text = stringResource(R.string.tomar_foto),
                     fontSize = 13.sp,
                     color = Color.Black
                 )
@@ -149,7 +154,7 @@ fun AgregarNueva(viewModel: viewModel){
                 border = BorderStroke(2.dp, Color.Black)
             ) {
                 Text(
-                    text = "Adjuntar Foto",
+                    text = stringResource(R.string.adjuntar_foto),
                     fontSize = 13.sp,
                     color = Color.Black
                 )
@@ -172,7 +177,7 @@ fun AgregarNueva(viewModel: viewModel){
                 border = BorderStroke(2.dp, Color.Black)
             ) {
                 Text(
-                    text = "Guardar",
+                    text = stringResource(R.string.guardar),
                     fontSize = 13.sp,
                     color = Color.Black
                 )
