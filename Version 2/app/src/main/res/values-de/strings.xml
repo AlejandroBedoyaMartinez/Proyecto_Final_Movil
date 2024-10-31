@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="proximos_eventos_del_mes">Veranstaltungen des Monats</string>
+    <string name="agregar_nueva">Neu hinzufügen</string>
+    <string name="buscar">Suchen</string>
+    <string name="ingrese_el_t_tulo">Titel eingeben</string>
+    <string name="convertir_a_nota">In Notiz umwandeln</string>
+    <string name="convertir_a_tarea">In Aufgabe umwandeln</string>
+    <string name="ingrese_la_descripcion">Beschreibung eingeben</string>
+    <string name="cuerpo">Inhalt</string>
+    <string name="ingrese_el_texto">Text eingeben</string>
+    <string name="tomar_foto">Foto aufnehmen</string>
+    <string name="adjuntar_foto">Foto anhängen</string>
+    <string name="guardar">Speichern</string>
+    <string name="posponer_tarea">Aufgabe verschieben:</string>
+    <string name="nueva_fecha_de_inicio">Neues Startdatum:</string>
+    <string name="elegir_fecha">Datum auswählen</string>
+    <string name="nueva_fecha_de_fin">Neues Enddatum:</string>
+    <string name="recordarme">Erinnere mich</string>
+
+</resources>

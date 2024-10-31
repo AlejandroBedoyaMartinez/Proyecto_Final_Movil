@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bienvenido">Bienvenue</string>
+    <string name="pagina_de_inicio">Page d accueil</string>
+    <string name="tareas">Tâches</string>
+    <string name="notas">Notes</string>
+    <string name="proximos_eventos_del_mes">Événements du mois</string>
+    <string name="agregar_nueva">Ajouter nouvelle</string>
+    <string name="buscar">Rechercher</string>
+    <string name="ingrese_el_t_tulo">Saisir le titre</string>
+    <string name="convertir_a_nota">Convertir en Note</string>
+    <string name="convertir_a_tarea">Convertir en Tâche</string>
+    <string name="ingrese_la_descripcion">Saisir la description</string>
+    <string name="cuerpo">Corps</string>
+    <string name="ingrese_el_texto">Saisir le texte</string>
+    <string name="tomar_foto">Prendre une photo</string>
+    <string name="adjuntar_foto">Joindre une photo</string>
+    <string name="guardar">Enregistrer</string>
+    <string name="posponer_tarea">Reporter la tâche :</string>
+    <string name="nueva_fecha_de_inicio">Nouvelle date de début :</string>
+    <string name="elegir_fecha">Choisir une date</string>
+    <string name="nueva_fecha_de_fin">Nouvelle date de fin :</string>
+    <string name="recordarme">Me rappeler</string>
+</resources>
