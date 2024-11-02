@@ -1,4 +1,4 @@
-package com.example.inventory
+package com.example.inventory.ui.tarea
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavHostController
+import com.example.inventory.R
+import com.example.inventory.viewModel
 
 
 @Composable

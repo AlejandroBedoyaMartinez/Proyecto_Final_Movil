@@ -6,8 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.room.Room
 import com.example.inventory.ui.theme.Proyecto_FinalTheme
-import com.example.inventorydata.notaDb
-import com.example.inventorydata.notaRepository
+import com.example.inventory.dataNota.notaDb
+import com.example.inventory.dataNota.notaRepository
+import com.example.inventory.viewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val db= Room.databaseBuilder(this, notaDb::class.java,"nota_db").build()
     val dao=db.dao
-        val repositoryNota =notaRepository(dao)
+        val repositoryNota = notaRepository(dao)
         val viewModel = viewModel(repositoryNota)
         enableEdgeToEdge()
         setContent {

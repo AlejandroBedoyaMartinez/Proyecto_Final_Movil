@@ -1,4 +1,4 @@
-package com.example.inventorydata
+package com.example.inventory.dataNota
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -8,5 +8,5 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class notaDb:RoomDatabase(){
-abstract val dao:notaDao
+abstract val dao: notaDao
 }

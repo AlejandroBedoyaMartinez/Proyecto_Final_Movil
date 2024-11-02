@@ -1,4 +1,4 @@
-package com.example.inventory
+package com.example.inventory.ui.nota
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -8,23 +8,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,28 +29,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.inventory.ui.tarea.PosponerTarea
-
+import com.example.inventory.R
+import com.example.inventory.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgregarNueva(navController: NavController,viewModel: viewModel){
-    var posponer by remember { mutableStateOf(true) }
+fun editarNota(navController: NavController, viewModel: viewModel, id:Int){
+
+    LaunchedEffect(id) {
+        viewModel.getNota(id)
+    }
+
     Column (
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Text(
             color = MaterialTheme.colorScheme.surface,
-            text = stringResource(R.string.agregar_nueva),
+            text = stringResource(R.string.editar),
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(5.dp))
         TextField(
-            value = viewModel.titulo.value, onValueChange = { viewModel.titulo.value = it},
+            value = viewModel.titulo.value, onValueChange = {
+                viewModel.titulo.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
                 .background(Color.White)
@@ -65,30 +67,9 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
-        var texto:String = stringResource(R.string.convertir_a_tarea);
-        if(viewModel.banderaSwitch.value){
-            texto = stringResource(R.string.convertir_a_nota );
-        }
-        Row (
-            Modifier
-                .align(Alignment.End)
-                .padding(end = 50.dp)){
-            Text(
-                text = texto,
-                Modifier.align(Alignment.CenterVertically),
-                color = MaterialTheme.colorScheme.surface
-            )
-            Switch(
-                checked = viewModel.banderaSwitch.value,
-                onCheckedChange = {viewModel.banderaSwitch.value = it},
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = Color.Gray,
-                    uncheckedThumbColor = Color.LightGray,
-                    uncheckedTrackColor = Color.DarkGray
-                )
-            )
-        }
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .size(10.dp))
         TextField(
             value = viewModel.descripcion.value, onValueChange = { viewModel.descripcion.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
@@ -107,7 +88,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             value = viewModel.descripcionCuerpo.value, onValueChange = { viewModel.descripcionCuerpo.value = it},
             placeholder = { Text(text = stringResource(R.string.cuerpo)) },
             modifier = Modifier
-                .height(230.dp)
+                .height(250.dp)
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
@@ -122,7 +103,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             value = viewModel.texto.value, onValueChange = { viewModel.texto.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
-                .height(230.dp)
+                .height(250.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
@@ -167,20 +148,14 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
                 )
             }
 
-            if(posponer and viewModel.banderaSwitch.value) {
-                PosponerTarea( onDismiss = { posponer = false })
-            }
-
             Button(
                 onClick = {
-                    if(viewModel.banderaSwitch.value == true) {
-                        posponer = true
-                    }else if(viewModel.tituloVacio()){
-                        viewModel.savedNota()
+                    if(viewModel.tituloVacio()){
+                        viewModel.editNota()
                         viewModel.limpiarVariables()
                         navController.navigate("notas")
                     }
-                   },
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White
                 ),
@@ -196,5 +171,3 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
         }
     }
 }
-
-

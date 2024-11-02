@@ -1,4 +1,4 @@
-package com.example.inventory
+package com.example.inventory.ui.tarea
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.inventory.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +28,7 @@ fun PosponerTarea(onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth() ,
             shape = RoundedCornerShape(16.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme. background,
             border = BorderStroke(2.dp, Color.LightGray)
         ) {
             Column(
@@ -49,6 +50,7 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         .padding(horizontal = 16.dp)
                 ) {
                     Text(
+                        color = MaterialTheme.colorScheme.surface,
                         text = stringResource(R.string.nueva_fecha_de_inicio),
                         modifier = Modifier.weight(1f)
                     )
@@ -80,6 +82,7 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         .padding(horizontal = 16.dp)
                 ) {
                     Text(
+                        color = MaterialTheme.colorScheme.surface,
                         text = stringResource(R.string.nueva_fecha_de_fin),
                         modifier = Modifier.weight(1f)
                     )

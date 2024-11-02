@@ -22,4 +22,6 @@
     <string name="elegir_fecha">Choose Date</string>
     <string name="nueva_fecha_de_fin">New End Date:</string>
     <string name="recordarme">Remind me</string>
+    <string name="editar">Edit</string>
+    <string name="eliminar">Delete</string>
 </resources>

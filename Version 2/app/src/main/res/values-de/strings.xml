@@ -17,5 +17,7 @@
     <string name="elegir_fecha">Datum auswählen</string>
     <string name="nueva_fecha_de_fin">Neues Enddatum:</string>
     <string name="recordarme">Erinnere mich</string>
+    <string name="editar">Bearbeiten</string>
+    <string name="eliminar">Loschen</string>
 
 </resources>

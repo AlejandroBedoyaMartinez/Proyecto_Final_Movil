@@ -1,14 +1,12 @@
-package com.example.inventorydata
+package com.example.inventory.ui.nota
 
-import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class notaEntity(
+data class Nota (
     @PrimaryKey(autoGenerate = true)
-    val id:Int? = null,
+    val id:Int=0,
     val titulo:String,
     val descripcion:String,
     val cuerpo:String,
-    val texto:String,
+    val texto:String
 )
