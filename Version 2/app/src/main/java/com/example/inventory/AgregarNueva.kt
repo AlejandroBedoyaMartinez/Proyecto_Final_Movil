@@ -46,12 +46,17 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp > 600
     val scrollState = rememberScrollState()
+    val paddingValue = if (isTablet) 70.dp else 20.dp
+
+    // Define el padding general para toda la columna
+    val columnPadding = if (isTablet) 50.dp else 16.dp
 
     // Columna principal con scroll
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState) // Activamos el scroll en toda la pantalla
+            .padding(columnPadding)
+        .verticalScroll(scrollState) // Activamos el scroll en toda la pantalla
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -88,7 +93,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
         Row(
             Modifier
                 .align(Alignment.End)
-                .padding(end = 50.dp)
+                .padding(end = paddingValue)
         ) {
             Text(
                 text = texto,
@@ -171,7 +176,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
         // Fila de botones
         Row(
             modifier = Modifier
-                .padding(vertical = 10.dp),
+                .padding(end = paddingValue),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Button(

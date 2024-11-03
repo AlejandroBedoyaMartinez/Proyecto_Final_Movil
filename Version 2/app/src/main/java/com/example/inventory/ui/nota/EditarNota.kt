@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -47,7 +49,13 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
     val scrollState = rememberScrollState()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTablet = configuration.screenWidthDp > 600
 
+    // Define el tamaño de los TextField basado en el tipo de dispositivo y la orientación
+    val textFieldWidth = if (isTablet) 600.dp else if (isLandscape) 400.dp else 300.dp
+    val textFieldHeightSmall = 100.dp
+    val textFieldHeightLarge = 250.dp
+    val textFieldPadding = 16.dp // Aumentar el padding
 
     Column(
         Modifier
@@ -64,20 +72,20 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
         )
         Spacer(modifier = Modifier.height(5.dp))
 
-        // Campo del título que ocupa todo el ancho
+        // Campo del título
         TextField(
             value = viewModel.titulo.value,
             onValueChange = { viewModel.titulo.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
-                .fillMaxWidth()
+                .width(textFieldWidth)
+                .height(textFieldHeightSmall) // Altura constante para el título
+                .padding(textFieldPadding) // Aumentar el padding
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
@@ -96,21 +104,21 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp)
+                        //.padding(end = 8.dp)
                 ) {
                     TextField(
                         value = viewModel.descripcion.value,
                         onValueChange = { viewModel.descripcion.value = it },
                         placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
                         modifier = Modifier
-                            .height(100.dp)
+                            .width(textFieldWidth)
+                            .height(textFieldHeightSmall) // Altura constante para descripción
+                            .padding(textFieldPadding) // Aumentar el padding
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.primary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
                             focusedTextColor = MaterialTheme.colorScheme.surface,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             cursorColor = MaterialTheme.colorScheme.surface,
                             focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
@@ -129,14 +137,14 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                         onValueChange = { viewModel.descripcionCuerpo.value = it },
                         placeholder = { Text(text = stringResource(R.string.cuerpo)) },
                         modifier = Modifier
-                            .height(250.dp)
+                            .width(textFieldWidth)
+                            .height(textFieldHeightLarge) // Altura para el cuerpo
+                            .padding(textFieldPadding) // Aumentar el padding
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.primary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
                             focusedTextColor = MaterialTheme.colorScheme.surface,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             cursorColor = MaterialTheme.colorScheme.surface,
                             focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
@@ -151,14 +159,14 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                 onValueChange = { viewModel.descripcion.value = it },
                 placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
                 modifier = Modifier
-                    .height(100.dp)
+                    .width(textFieldWidth)
+                    .height(textFieldHeightSmall) // Altura constante para descripción
+                    .padding(textFieldPadding) // Aumentar el padding
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.primary,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
@@ -172,14 +180,14 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                 onValueChange = { viewModel.descripcionCuerpo.value = it },
                 placeholder = { Text(text = stringResource(R.string.cuerpo)) },
                 modifier = Modifier
-                    .height(250.dp)
+                    .width(textFieldWidth)
+                    .height(textFieldHeightLarge) // Altura para el cuerpo
+                    .padding(textFieldPadding) // Aumentar el padding
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.primary,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
@@ -195,14 +203,14 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
             onValueChange = { viewModel.texto.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
-                .height(250.dp)
+                .width(textFieldWidth)
+                .height(textFieldHeightLarge) // Altura para el texto adicional
+                .padding(textFieldPadding) // Aumentar el padding
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface

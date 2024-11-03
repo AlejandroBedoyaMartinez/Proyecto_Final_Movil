@@ -1,5 +1,6 @@
 package com.example.inventory.ui.tarea
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.navigation.NavHostController
@@ -39,31 +42,70 @@ import com.example.inventory.viewModel
 
 
 @Composable
-fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
+fun tareasScreen(navHostController: NavHostController, viewModel: viewModel) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTablet = configuration.screenWidthDp > 600
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(16.dp) // Margen alrededor de todo el fondo de la pantalla
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Row (Modifier.padding(top = 25.dp)) {
+        Row(Modifier.padding(top = 25.dp)) {
             BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
         }
 
-        Box(
-            modifier = Modifier
-                .height(680.dp)
-                .background(MaterialTheme.colorScheme.background)
-                .align(Alignment.CenterHorizontally)
-                .border(BorderStroke(2.dp, Color.Black))
-                .width(330.dp)
-        ) {
-            Column(
-                Modifier
+        if (isTablet) {
+            // Layout específico para tablet: lista de tareas a la izquierda y botón a la derecha
+            Row(
+                modifier = Modifier
                     .fillMaxSize()
+                    .padding(45.dp)
             ) {
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    items(13) {
+                        val color = if (it % 2 == 0) Color.LightGray else Color.White
+                        GenerarTarea(
+                            tarea = "Tarea ${it + 1}",
+                            colorFondo = color,
+                            checked = false,
+                            onCheckedChange = {}
+                        )
+                    }
+                }
+
+                // Botón de agregar a la derecha en tablet
+                Button(
+                    onClick = { navHostController.navigate("agregarNueva") },
+                    modifier = Modifier
+                        .padding(50.dp)
+                        .align(Alignment.Bottom)
+                        .fillMaxHeight(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                }
+            }
+        } else {
+            // Layout para celular
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
                     items(19) {
                         val color = if (it % 2 == 0) Color.LightGray else Color.White
@@ -76,25 +118,22 @@ fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
                     }
                 }
 
-
-            }
-            Button(
-                onClick = { navHostController.navigate("agregarNueva") },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                shape = RoundedCornerShape(1.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                // Botón de agregar en la esquina inferior derecha
+                Button(
+                    onClick = { navHostController.navigate("agregarNueva") },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomEnd),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                }
             }
         }
     }
 }
-
-
-
 
 @Composable
 fun GenerarTarea(
@@ -110,7 +149,7 @@ fun GenerarTarea(
             .padding(5.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = tarea,Modifier.align(Alignment.CenterVertically))
+        Text(text = tarea, Modifier.align(Alignment.CenterVertically))
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange
@@ -125,7 +164,6 @@ fun BuscarText(
     onQueryChanged: (String) -> Unit
 ) {
     OutlinedTextField(
-
         value = query,
         onValueChange = onQueryChanged,
         placeholder = { Text(text = stringResource(R.string.buscar)) },
@@ -141,11 +179,11 @@ fun BuscarText(
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color.Gray, // Color del borde cuando está enfocado
-            unfocusedBorderColor = Color.Gray, // Color del borde cuando no está enfocado
-            cursorColor = Color.Gray, // Color del cursor
-            focusedTextColor = Color.Black, // Color del texto cuando está enfocado
-            unfocusedTextColor = Color.DarkGray // Color del texto cuando no está enfocado
+            focusedBorderColor = Color.Gray,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color.Gray,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.DarkGray
         ),
         textStyle = TextStyle(color = MaterialTheme.colorScheme.surface)
     )
