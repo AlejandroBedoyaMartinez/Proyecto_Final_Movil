@@ -1,5 +1,6 @@
 package com.example.inventory
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -45,18 +47,27 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
 
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp > 600
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val scrollState = rememberScrollState()
-    val paddingValue = if (isTablet) 70.dp else 20.dp
+    val paddingValue = if (isTablet) 70.dp else 10.dp
 
     // Define el padding general para toda la columna
-    val columnPadding = if (isTablet) 50.dp else 16.dp
+    val columnPadding = if (isTablet && !isLandscape) 16.dp else 0.dp
+
+
+    // Define el ancho de los TextFields
+    val textFieldWidth = when {
+        isTablet -> 500.dp
+        isLandscape -> 400.dp
+        else -> 300.dp
+    }
 
     // Columna principal con scroll
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(columnPadding)
-        .verticalScroll(scrollState) // Activamos el scroll en toda la pantalla
+            .verticalScroll(scrollState) // Activamos el scroll en toda la pantalla
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -74,6 +85,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
             onValueChange = { viewModel.titulo.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
+                .width(textFieldWidth)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
@@ -118,6 +130,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
             onValueChange = { viewModel.descripcion.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
             modifier = Modifier
+                .width(textFieldWidth)
                 .height(100.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
@@ -138,6 +151,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
             onValueChange = { viewModel.descripcionCuerpo.value = it },
             placeholder = { Text(text = stringResource(R.string.cuerpo)) },
             modifier = Modifier
+                .width(textFieldWidth)
                 .height(230.dp)
                 .padding(top = 10.dp)
                 .background(Color.White)
@@ -159,6 +173,7 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
             onValueChange = { viewModel.texto.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
+                .width(textFieldWidth)
                 .height(230.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),

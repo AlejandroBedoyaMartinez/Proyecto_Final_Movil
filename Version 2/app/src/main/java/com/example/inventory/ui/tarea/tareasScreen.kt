@@ -47,13 +47,15 @@ fun tareasScreen(navHostController: NavHostController, viewModel: viewModel) {
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val isTablet = configuration.screenWidthDp > 600
 
+    val columnPadding = if (isTablet && !isLandscape) 16.dp else 0.dp
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp) // Margen alrededor de todo el fondo de la pantalla
+            .padding(columnPadding) // Margen alrededor de todo el fondo de la pantalla
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Row(Modifier.padding(top = 25.dp)) {
+        Row(Modifier.padding(top = if (isTablet) 25.dp else 15.dp)) {
             BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
         }
 

@@ -51,11 +51,17 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val isTablet = configuration.screenWidthDp > 600
 
-    // Define el tamaño de los TextField basado en el tipo de dispositivo y la orientación
-    val textFieldWidth = if (isTablet) 600.dp else if (isLandscape) 400.dp else 300.dp
+    // Definir el ancho de los TextField basado en el tipo de dispositivo y la orientación
+    val textFieldWidth = when {
+        isTablet && isLandscape -> 0.50f // Ancho relativo al tamaño de la pantalla
+        isTablet -> 0.6f
+        isLandscape -> 0.8f
+        else -> 1f
+    }
     val textFieldHeightSmall = 100.dp
-    val textFieldHeightLarge = 250.dp
-    val textFieldPadding = 16.dp // Aumentar el padding
+    val textFieldHeightMed = 150.dp
+    val textFieldHeightLarge = 350.dp
+    val textFieldPadding = 3.dp // Aumentar el padding
 
     Column(
         Modifier
@@ -78,9 +84,9 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
             onValueChange = { viewModel.titulo.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
-                .width(textFieldWidth)
-                .height(textFieldHeightSmall) // Altura constante para el título
-                .padding(textFieldPadding) // Aumentar el padding
+                .fillMaxWidth(textFieldWidth)
+                .height(textFieldHeightSmall)
+                .padding(textFieldPadding)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
@@ -93,27 +99,29 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
         )
 
         Spacer(modifier = Modifier.size(10.dp))
-
+        // Modo horizontal
         if (isLandscape) {
-            // En orientación horizontal: descripción y contenido en la misma fila
             Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp), // Margen para centrar mejor el contenido
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 // Columna de la descripción a la izquierda
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        //.padding(end = 8.dp)
+                        .weight(0.4f)
+                        .padding(end = 16.dp) // Separación entre las columnas
                 ) {
                     TextField(
                         value = viewModel.descripcion.value,
                         onValueChange = { viewModel.descripcion.value = it },
                         placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
                         modifier = Modifier
-                            .width(textFieldWidth)
-                            .height(textFieldHeightSmall) // Altura constante para descripción
-                            .padding(textFieldPadding) // Aumentar el padding
+                            .fillMaxWidth(0.9f) // Ajusta el ancho dentro de la columna
+                            .height(textFieldHeightSmall)
+                            .padding(textFieldPadding)
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
                         colors = TextFieldDefaults.colors(
@@ -129,17 +137,17 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                 // Columna del contenido a la derecha
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp)
+                        .weight(0.6f)
+                        .padding(start = 16.dp) // Separación entre las columnas
                 ) {
                     TextField(
                         value = viewModel.descripcionCuerpo.value,
                         onValueChange = { viewModel.descripcionCuerpo.value = it },
                         placeholder = { Text(text = stringResource(R.string.cuerpo)) },
                         modifier = Modifier
-                            .width(textFieldWidth)
-                            .height(textFieldHeightLarge) // Altura para el cuerpo
-                            .padding(textFieldPadding) // Aumentar el padding
+                            .fillMaxWidth(0.9f) // Ajusta el ancho dentro de la columna
+                            .height(textFieldHeightLarge)
+                            .padding(textFieldPadding)
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
                         colors = TextFieldDefaults.colors(
@@ -152,16 +160,17 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                     )
                 }
             }
-        } else {
-            // En orientación vertical: descripción y contenido en columnas separadas
+        }
+        else {
+            // En orientación vertical
             TextField(
                 value = viewModel.descripcion.value,
                 onValueChange = { viewModel.descripcion.value = it },
                 placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
                 modifier = Modifier
-                    .width(textFieldWidth)
-                    .height(textFieldHeightSmall) // Altura constante para descripción
-                    .padding(textFieldPadding) // Aumentar el padding
+                    .fillMaxWidth(textFieldWidth)
+                    .height(textFieldHeightSmall)
+                    .padding(textFieldPadding)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
                 colors = TextFieldDefaults.colors(
@@ -180,9 +189,9 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
                 onValueChange = { viewModel.descripcionCuerpo.value = it },
                 placeholder = { Text(text = stringResource(R.string.cuerpo)) },
                 modifier = Modifier
-                    .width(textFieldWidth)
-                    .height(textFieldHeightLarge) // Altura para el cuerpo
-                    .padding(textFieldPadding) // Aumentar el padding
+                    .fillMaxWidth(textFieldWidth)
+                    .height(textFieldHeightLarge)
+                    .padding(textFieldPadding)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
                 colors = TextFieldDefaults.colors(
@@ -203,9 +212,9 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
             onValueChange = { viewModel.texto.value = it },
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
-                .width(textFieldWidth)
-                .height(textFieldHeightLarge) // Altura para el texto adicional
-                .padding(textFieldPadding) // Aumentar el padding
+                .fillMaxWidth(textFieldWidth)
+                .height(textFieldHeightLarge)
+                .padding(textFieldPadding)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
@@ -217,10 +226,13 @@ fun editarNota(navController: NavController, viewModel: viewModel, id: Int) {
             )
         )
 
+        Spacer(modifier = Modifier.size(10.dp))
+
         // Botones
         Row(
             modifier = Modifier
-                .padding(vertical = 10.dp),
+                .padding(vertical = 10.dp)
+                .padding(bottom = if (isTablet) 60.dp else 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(

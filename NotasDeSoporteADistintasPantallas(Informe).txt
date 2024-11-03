@@ -2,7 +2,7 @@ Inicio (Listo)
 
 Notas(listo)
 
-Tareas(En progreso)
+Tareas(listo)
 
 ////funcionalidad //////////
 
@@ -12,9 +12,9 @@ que se escoja la fecha, o agregar una pantalla especifica para tareas
 //////////////////////////////////////7
 
 Entonces: 
-Faltaria mejorar en cuanto a estetica de Notas. 
-Falta aplicar adaptacion en agregarnueva.
+Faltaria mejorar unos texflields cuanto a estetica de Notas. 
 
-Noa: Esta version ya tiene lo que se adapto en main de ---> Se implemento la Base de datos,agregar y ver notas,soporte para idiomas <---
+
+Nota: Esta version ya tiene lo que se adapto en main de ---> Se implemento la Base de datos,agregar y ver notas,soporte para idiomas <---
 
 
