@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="pagina_de_inicio">Pagina Inicio</string>
+    <string name="tareas">Tareas</string>
+    <string name="notas">Notas</string>
+    <string name="proximos_eventos_del_mes">Proximos eventos del mes</string>
+    <string name="agregar_nueva">Agregar nueva</string>
+    <string name="buscar">Buscar</string>
+    <string name="ingrese_el_t_tulo">Ingrese el título</string>
+    <string name="convertir_a_nota">Convertir a Nota</string>
+    <string name="convertir_a_tarea">Convertir a Tarea</string>
+    <string name="ingrese_la_descripcion">Ingrese la descripcion</string>
+    <string name="cuerpo">Cuerpo</string>
+    <string name="ingrese_el_texto">Ingrese el texto</string>
+    <string name="tomar_foto">Tomar Foto</string>
+    <string name="adjuntar_foto">Adjuntar Foto</string>
+    <string name="guardar">Guardar</string>
+    <string name="posponer_tarea">Posponer Tarea:</string>
+    <string name="nueva_fecha_de_inicio">Nueva Fecha de inicio:</string>
+    <string name="elegir_fecha">Elegir Fecha</string>
+    <string name="nueva_fecha_de_fin">Nueva Fecha de Fin:</string>
+    <string name="recordarme">Recordarme</string>
+</resources>
