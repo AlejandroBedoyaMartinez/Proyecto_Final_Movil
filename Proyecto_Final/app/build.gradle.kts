@@ -5,7 +5,11 @@ plugins {
 
 android {
     namespace = "jano.net.proyecto_final"
+<<<<<<< HEAD
     compileSdk = 34
+=======
+    compileSdk = 35
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 
     defaultConfig {
         applicationId = "jano.net.proyecto_final"
@@ -59,6 +63,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+<<<<<<< HEAD
+=======
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,6 +76,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+<<<<<<< HEAD
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
 
+=======
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 }

@@ -50,7 +50,11 @@ fun HomePageScreen(navHostController: NavHostController) {
             ,start = 28.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.usuario),
+<<<<<<< HEAD
                 contentDescription = "ImagenUsuario",
+=======
+                contentDescription = stringResource(R.string.imagenusuario),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                 modifier = Modifier.size(60.dp)
             )
             Text(
@@ -62,7 +66,11 @@ fun HomePageScreen(navHostController: NavHostController) {
             )
         }
         Text(
+<<<<<<< HEAD
             text = stringResource(R.string.pagina_de_inicio),
+=======
+            text = stringResource(R.string.homescreen),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             modifier = Modifier.align(Alignment.CenterHorizontally),
             style = Typography.titleLarge,
             color = MaterialTheme.colorScheme.surface
@@ -102,7 +110,11 @@ fun HomePageScreen(navHostController: NavHostController) {
         ) {
             Column {
                 Text(
+<<<<<<< HEAD
                     text = stringResource(R.string.proximos_eventos_del_mes),
+=======
+                    text = stringResource(R.string.proximos_eventos_este_mes),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.LightGray)
@@ -118,7 +130,11 @@ fun HomePageScreen(navHostController: NavHostController) {
         Spacer(modifier = Modifier.height(32.dp))
 
         FloatingActionButton(
+<<<<<<< HEAD
             onClick = { navHostController.navigate("agregarNueva") },
+=======
+            onClick = {  },
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             modifier = Modifier
                 .size(60.dp)
                 .align(Alignment.CenterHorizontally)
@@ -126,7 +142,11 @@ fun HomePageScreen(navHostController: NavHostController) {
             containerColor = MaterialTheme.colorScheme.primary,
             shape = CircleShape
         ) {
+<<<<<<< HEAD
             Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.Magenta)
+=======
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.agregar), tint = Color.Magenta)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
         }
     }
 }

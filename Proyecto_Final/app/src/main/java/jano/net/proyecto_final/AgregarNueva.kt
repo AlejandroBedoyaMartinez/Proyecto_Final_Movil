@@ -35,9 +35,16 @@ import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+<<<<<<< HEAD
 @Composable
 fun AgregarNueva(viewModel: viewModel){
     var posponer by remember { mutableStateOf(true) }
+=======
+@Composable //aqui es para notas, agregar una nueva nota
+fun AgregarNueva(
+){
+    var posponer by remember { mutableStateOf(false) }
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
     Column (
         Modifier
             .fillMaxSize()
@@ -45,13 +52,18 @@ fun AgregarNueva(viewModel: viewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier.height(50.dp))
+<<<<<<< HEAD
         TextField(
             value = viewModel.titulo.value, onValueChange = { viewModel.titulo.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
+=======
+        TextField(value = stringResource(R.string.titulo), onValueChange = {},
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             modifier = Modifier
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
+<<<<<<< HEAD
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
@@ -62,10 +74,16 @@ fun AgregarNueva(viewModel: viewModel){
         if(viewModel.banderaSwitch.value){
             texto = stringResource(R.string.convertir_a_tarea);
         }
+=======
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        )
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
         Row (
             Modifier
                 .align(Alignment.End)
                 .padding(end = 50.dp)){
+<<<<<<< HEAD
             Text(
                 text = texto,
                 Modifier.align(Alignment.CenterVertically),
@@ -74,6 +92,13 @@ fun AgregarNueva(viewModel: viewModel){
             Switch(
                 checked = viewModel.banderaSwitch.value,
                 onCheckedChange = {viewModel.banderaSwitch.value = it},
+=======
+            Text( text = stringResource(R.string.convertir_a) ,Modifier.align(Alignment.CenterVertically))
+            Switch(
+
+                checked = true,
+                onCheckedChange = {},
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
                     checkedTrackColor = Color.Gray,
@@ -82,6 +107,7 @@ fun AgregarNueva(viewModel: viewModel){
                 )
             )
         }
+<<<<<<< HEAD
         TextField(
             value = viewModel.descripcion.value, onValueChange = { viewModel.descripcion.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
@@ -99,12 +125,17 @@ fun AgregarNueva(viewModel: viewModel){
         TextField(
             value = viewModel.descripcionCuerpo.value, onValueChange = { viewModel.descripcionCuerpo.value = it},
             placeholder = { Text(text = stringResource(R.string.cuerpo)) },
+=======
+
+        TextField( value = stringResource(R.string.descripcion), onValueChange = {},
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             modifier = Modifier
                 .height(250.dp)
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
+<<<<<<< HEAD
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
@@ -114,15 +145,25 @@ fun AgregarNueva(viewModel: viewModel){
         TextField(
             value = viewModel.texto.value, onValueChange = { viewModel.texto.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
+=======
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        )
+        TextField(value = stringResource(R.string.tu_texto_aqui), onValueChange = {},
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             modifier = Modifier
                 .height(250.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.textFieldColors(
+<<<<<<< HEAD
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
+=======
+                containerColor = MaterialTheme.colorScheme.primary
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             )
         )
         Row (
@@ -160,6 +201,7 @@ fun AgregarNueva(viewModel: viewModel){
                 )
             }
 
+<<<<<<< HEAD
             if(posponer and viewModel.banderaSwitch.value) {
                 PosponerTarea( onDismiss = { posponer = false })
             }
@@ -170,6 +212,14 @@ fun AgregarNueva(viewModel: viewModel){
                         posponer = true
                     }
                    },
+=======
+
+            if(posponer) {
+                PosponerTarea(onDismiss = { posponer = false })
+            }
+            Button(
+                onClick = { posponer = true},
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White
                 ),

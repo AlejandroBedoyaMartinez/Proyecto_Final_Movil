@@ -27,6 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+<<<<<<< HEAD
+=======
+import androidx.compose.runtime.remember
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
@@ -38,7 +42,12 @@ import androidx.navigation.NavHostController
 
 
 @Composable
+<<<<<<< HEAD
 fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
+=======
+fun notasScreen(navHostController: NavHostController) {
+    var query by remember { mutableStateOf("") }
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 
     Box(
         modifier = Modifier
@@ -52,7 +61,11 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Row (Modifier.padding(top = 25.dp)) {
+<<<<<<< HEAD
                 BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
+=======
+                BuscarText(query = query, onQueryChanged = { query = it })
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -64,7 +77,11 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
             ) {
                 items(15) {
                     val i = it + 1
+<<<<<<< HEAD
                     NotaCuadro(titulo = "Nota $i", contenido = "Descripcion")
+=======
+                    NotaCuadro(titulo = "Nota $i", contenido = stringResource(R.string.descripcionNota))
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                 }
             }
         }
@@ -79,7 +96,11 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
             shape = RoundedCornerShape(1.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
+<<<<<<< HEAD
             Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+=======
+            Text(text = stringResource(R.string.agregar_nueva_nota), color = Color.Black)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
         }
     }
 }
@@ -119,7 +140,11 @@ fun NotaCuadro(
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
+<<<<<<< HEAD
                     contentDescription = "Opciones",
+=======
+                    contentDescription = stringResource(R.string.opciones),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                     tint = Color.Black
                 )
             }

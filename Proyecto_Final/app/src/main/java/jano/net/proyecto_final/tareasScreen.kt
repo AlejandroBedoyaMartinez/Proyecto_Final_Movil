@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+<<<<<<< HEAD
 import androidx.compose.foundation.layout.width
+=======
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -35,12 +38,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+<<<<<<< HEAD
 import androidx.compose.ui.text.TextStyle
+=======
+import androidx.compose.ui.tooling.preview.Preview
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 import androidx.navigation.NavHostController
 
 
 @Composable
+<<<<<<< HEAD
 fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
+=======
+fun tareasScreen(navHostController: NavHostController) {
+    var query by remember { mutableStateOf("") }
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
 
     Column(
         modifier = Modifier
@@ -48,16 +60,29 @@ fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
             .background(MaterialTheme.colorScheme.background)
     ) {
         Row (Modifier.padding(top = 25.dp)) {
+<<<<<<< HEAD
             BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
+=======
+            BuscarText(query = query, onQueryChanged = { query = it })
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
         }
 
         Box(
             modifier = Modifier
+<<<<<<< HEAD
                 .height(680.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .align(Alignment.CenterHorizontally)
                 .border(BorderStroke(2.dp, Color.Black))
                 .width(330.dp)
+=======
+                .height(650.dp)
+                .background(MaterialTheme.colorScheme.background)
+                .align(Alignment.CenterHorizontally)
+                .border(BorderStroke(2.dp, Color.Black))
+                .fillMaxWidth()
+                .padding(35.dp, 40.dp)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
         ) {
             Column(
                 Modifier
@@ -80,7 +105,11 @@ fun tareasScreen(navHostController: NavHostController,viewModel: viewModel) {
 
             }
             Button(
+<<<<<<< HEAD
                 onClick = { navHostController.navigate("agregarNueva") },
+=======
+                onClick = { navHostController.navigate("AgregarNTarea") },
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
@@ -133,7 +162,11 @@ fun BuscarText(
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
+<<<<<<< HEAD
                 contentDescription = "Icono de búsqueda"
+=======
+                contentDescription = stringResource(R.string.icono_de_b_squeda)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
             )
         },
         modifier = Modifier
@@ -142,10 +175,17 @@ fun BuscarText(
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
+<<<<<<< HEAD
             focusedBorderColor = MaterialTheme.colorScheme.surface,
             unfocusedBorderColor = MaterialTheme.colorScheme.surface,
             cursorColor = MaterialTheme.colorScheme.surface,
         ),
         textStyle = TextStyle(color = MaterialTheme.colorScheme.surface)
+=======
+            focusedBorderColor = Color.Gray,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color.Gray,
+        )
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
     )
 }

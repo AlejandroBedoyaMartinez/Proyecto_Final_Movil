@@ -54,14 +54,22 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
+<<<<<<< HEAD
                         value = stringResource(R.string.elegir_fecha),
+=======
+                        value = stringResource(R.string.escoger_fecha),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                         onValueChange = {},
                         modifier = Modifier.weight(1f),
                         readOnly = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Filled.DateRange,
+<<<<<<< HEAD
                                 contentDescription = "Icono calendario"
+=======
+                                contentDescription = stringResource(R.string.icono_calendario)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                             )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -85,14 +93,22 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
+<<<<<<< HEAD
                         value = stringResource(R.string.elegir_fecha),
+=======
+                        value = stringResource(R.string.escoger_fechaT),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                         onValueChange = { },
                         modifier = Modifier.weight(1f),
                         readOnly = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Filled.DateRange,
+<<<<<<< HEAD
                                 contentDescription = "Icono calendario"
+=======
+                                contentDescription = stringResource(R.string.icono_calendarioPosTarea)
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                             )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -133,7 +149,11 @@ fun PosponerTarea(onDismiss: () -> Unit) {
                         )
                     ) {
                         Text(
+<<<<<<< HEAD
                             text = stringResource(R.string.guardar),
+=======
+                            text = stringResource(R.string.guardarT),
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
                             fontSize = 16.sp,
                             color = Color.Black
                         )
