@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
@@ -50,6 +51,9 @@ import com.example.inventory.dataNota.Nota
 @Composable
 fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNota) {
     val notas by viewModelNota.notas.collectAsState()
+    val configuration = LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp > 600
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,6 +61,7 @@ fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNo
     ) {
         Column(
             modifier = Modifier
+                .padding(10.dp, 10.dp)//
                 .fillMaxSize()
                 .padding(10.dp, 10.dp)
                 .background(MaterialTheme.colorScheme.background)

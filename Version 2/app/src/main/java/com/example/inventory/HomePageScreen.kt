@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,92 +40,196 @@ import java.lang.reflect.Type
 @Composable
 fun HomePageScreen(navHostController: NavHostController) {
 
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-    ){
-        Row(modifier = Modifier.padding(top = 45.dp
-            ,start = 28.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.usuario),
-                contentDescription = "ImagenUsuario",
-                modifier = Modifier.size(60.dp)
-            )
-            Text(
-                text = stringResource(R.string.bienvenido),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 15.dp),
-                color = MaterialTheme.colorScheme.surface
-            )
-        }
-        Text(
-            text = stringResource(R.string.pagina_de_inicio),
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            color = MaterialTheme.colorScheme.surface,
-            style = MaterialTheme.typography.titleLarge
-        )
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.SpaceEvenly){
-            Button(
-                onClick = {navHostController.navigate("tareas")},
-                modifier = Modifier
-                    .width(130.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(text = stringResource(R.string.tareas), color = Color.Black)
-            }
+    BoxWithConstraints {
+        val isWideScreen =
+            maxWidth > 600.dp // Se considera tablet o modo horizontal si el ancho es mayor a
 
-            Button(
-                onClick = {navHostController.navigate("notas")},
-                modifier = Modifier
-                    .width(130.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(text = stringResource(R.string.notas), color = Color.Black)
-            }
-        }
-        Spacer(modifier = Modifier.height(28.dp))
-        Box(
+        Column(
             modifier = Modifier
-                .height(200.dp)
-                .border(BorderStroke(2.dp, Color.Gray))
-                .width(310.dp)
-                .align(Alignment.CenterHorizontally)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Column {
+            Row(
+                modifier = Modifier.padding(
+                    top = 45.dp, start = 28.dp
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.usuario),
+                    contentDescription = "ImagenUsuario",
+                    modifier = Modifier.size(60.dp)
+                )
                 Text(
-                    text = stringResource(R.string.proximos_eventos_del_mes),
+                    text = stringResource(R.string.bienvenido),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 15.dp),
+                    color = MaterialTheme.colorScheme.surface
+                )
+            }
+            Text(
+                text = stringResource(R.string.pagina_de_inicio),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colorScheme.surface,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+
+            if (isWideScreen) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.LightGray)
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.weight(1f))
+                        .align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        Button(
+                            onClick = { navHostController.navigate("tareas") },
+                            modifier = Modifier
+                                .width(130.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(2.dp, Color.Black)
+                        ) {
+                            Text(text = stringResource(R.string.tareas), color = Color.Black)
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { navHostController.navigate("notas") },
+                            modifier = Modifier
+                                .width(130.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(2.dp, Color.Black)
+                        ) {
+                            Text(text = stringResource(R.string.notas), color = Color.Black)
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .border(BorderStroke(2.dp, Color.Gray))
+                            .width(310.dp)
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(R.string.proximos_eventos_del_mes),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.LightGray)
+                                    .padding(8.dp),
+                                textAlign = TextAlign.Center,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FloatingActionButton(
+                    onClick = { navHostController.navigate("agregarNueva") },
+                    modifier = Modifier
+                        .size(60.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.Magenta)
+                }
+            } else {
+
+                // Diseño en modo horizontal en celular (ancho <= 600dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = { navHostController.navigate("tareas") },
+                            modifier = Modifier.width(130.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(2.dp, Color.Black)
+                        ) {
+                            Text(text = stringResource(R.string.tareas), color = Color.Black)
+                        }
+
+                        Button(
+                            onClick = { navHostController.navigate("notas") },
+                            modifier = Modifier.width(130.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(2.dp, Color.Black)
+                        ) {
+                            Text(text = stringResource(R.string.notas), color = Color.Black)
+                        }
+
+
+                    }//row
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Caja de próximos eventos
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .border(BorderStroke(2.dp, Color.Gray))
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(R.string.proximos_eventos_del_mes),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.LightGray)
+                                    .padding(8.dp),
+                                textAlign = TextAlign.Center,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(), // Llenar todo el espacio disponible
+                        contentAlignment = Alignment.Center // Centrar contenido horizontal y verticalmente
+                    ) {
+                        FloatingActionButton(
+                            onClick = { navHostController.navigate("agregarNueva") },
+                            modifier = Modifier
+                                .size(60.dp)
+                                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape),
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Agregar",
+                                tint = Color.Magenta
+                            )
+                        }
+                    }
+                }
             }
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        FloatingActionButton(
-            onClick = { navHostController.navigate("agregarNueva") },
-            modifier = Modifier
-                .size(60.dp)
-                .align(Alignment.CenterHorizontally)
-                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape),
-            containerColor = MaterialTheme.colorScheme.primary,
-            shape = CircleShape
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.Magenta)
-        }
     }
-}
+
+    }
+
 

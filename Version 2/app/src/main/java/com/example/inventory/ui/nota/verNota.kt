@@ -1,5 +1,6 @@
 package com.example.inventory.ui.nota
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,6 +37,12 @@ import com.example.inventory.R.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun verNota(navController: NavController, viewModelNota: viewModelNota, id:Int){
+
+    BackHandler {
+        navController.popBackStack()
+        viewModelNota.limpiarVariables()
+    }
+
     LaunchedEffect(id) {
         viewModelNota.getNota(id)
     }

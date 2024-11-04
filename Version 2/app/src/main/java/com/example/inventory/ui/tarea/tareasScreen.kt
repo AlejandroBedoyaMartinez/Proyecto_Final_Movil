@@ -1,5 +1,6 @@
 package com.example.inventory.ui.tarea
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpOffset
@@ -57,29 +60,74 @@ import com.example.inventory.dataTarea.Tarea
 fun tareasScreen(navHostController: NavHostController, viewModelTarea: ViewModelTarea) {
     val tareas by viewModelTarea.tareas.collectAsState()
 
+    val configuration = LocalConfiguration.current
+    val islandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isTablet = configuration.screenWidthDp > 600
+
+    val columnPadding = if (isTablet && !islandscape) 16.dp else 0.dp
     Column(
         modifier = Modifier
+            .padding(columnPadding)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Row (Modifier.padding(top = 25.dp)) {
+        Row (Modifier.padding(top = if (isTablet) 25.dp else 15.dp)) {
             BuscarText(query = viewModelTarea.query.value, onQueryChanged = { viewModelTarea.query.value = it })
         }
 
-        Box(
-            modifier = Modifier
-                .height(680.dp)
-                .background(MaterialTheme.colorScheme.background)
-                .align(Alignment.CenterHorizontally)
-                .border(BorderStroke(2.dp, MaterialTheme.colorScheme.surface))
-                .width(330.dp)
-        ) {
-            Column(
-                Modifier
+
+        if(isTablet) {
+
+            Row(
+                modifier = Modifier
                     .fillMaxSize()
+                    .padding(45.dp)
             ) {
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    items(tareas.size) {
+                        val color = if (it % 2 == 0) Color.LightGray else Color.White
+                        GenerarTarea(
+                            tarea = tareas[it],
+                            colorFondo = color,
+                            checked = tareas[it].hecho,
+                            onCheckedChange = { check ->
+                                tareas[it].hecho = check
+                                viewModelTarea.editCheck(tareas[it])
+                                navHostController.navigate("tareas")
+                            },
+                            navHostController,
+                            viewModelTarea
+                        )
+                    }
+                }
+                Button(
+                    onClick = { navHostController.navigate("agregarNueva") },
+                    modifier = Modifier
+                        .align(Alignment.Bottom)
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(1.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                }
+            }
+
+        }else{
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ){
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(16.dp)
                 ) {
                     items(tareas.size) {
                         val color = if (it % 2 == 0) Color.LightGray else Color.White
@@ -97,21 +145,22 @@ fun tareasScreen(navHostController: NavHostController, viewModelTarea: ViewModel
                     }
                 }
 
-            }
-            Button(
-                onClick = { navHostController.navigate("agregarNueva") },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                shape = RoundedCornerShape(1.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                Button(
+                    onClick = { navHostController.navigate("agregarNueva") },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(1.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                }
             }
         }
+        }
     }
-}
+
 
 
 

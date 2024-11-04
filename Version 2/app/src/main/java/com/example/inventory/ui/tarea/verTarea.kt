@@ -1,6 +1,7 @@
 package com.example.inventory.ui.tarea
 
 import android.icu.util.Calendar
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,6 +46,10 @@ import com.example.inventory.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:Int){
+    BackHandler {
+        navController.popBackStack()
+        viewModelTarea.limpiarVariables()
+    }
     LaunchedEffect(id) {
         viewModelTarea.getTarea(id)
     }
