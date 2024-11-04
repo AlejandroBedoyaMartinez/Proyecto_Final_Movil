@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import com.example.inventory.ui.tarea.PosponerTarea
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun AgregarNueva(navController: NavController, viewModel: viewModel) {
     var posponer by remember { mutableStateOf(true) }
@@ -191,7 +191,8 @@ fun AgregarNueva(navController: NavController, viewModel: viewModel) {
         // Fila de botones
         Row(
             modifier = Modifier
-                .padding(end = paddingValue),
+                .padding(vertical = 10.dp)
+                .padding(bottom = if (isTablet) 40.dp else 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Button(
