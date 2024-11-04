@@ -1,6 +1,5 @@
 package com.example.inventory.dataNota
 
-import com.example.inventory.ui.nota.Nota
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

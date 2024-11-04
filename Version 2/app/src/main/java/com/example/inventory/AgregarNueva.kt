@@ -1,5 +1,6 @@
 package com.example.inventory
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,17 +29,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.inventory.dataNota.Nota
+import com.example.inventory.dataTarea.Tarea
+import com.example.inventory.ui.nota.viewModelNota
 import com.example.inventory.ui.tarea.PosponerTarea
+import com.example.inventory.ui.tarea.ViewModelTarea
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgregarNueva(navController: NavController,viewModel: viewModel){
+fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,viewModelTarea: ViewModelTarea){
     var posponer by remember { mutableStateOf(true) }
+    val context = LocalContext.current
     Column (
         Modifier
             .fillMaxSize()
@@ -53,7 +60,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
         )
         Spacer(modifier = Modifier.height(5.dp))
         TextField(
-            value = viewModel.titulo.value, onValueChange = { viewModel.titulo.value = it},
+            value = viewModelNota.titulo.value, onValueChange = { viewModelNota.titulo.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
                 .background(Color.White)
@@ -66,7 +73,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             )
         )
         var texto:String = stringResource(R.string.convertir_a_tarea);
-        if(viewModel.banderaSwitch.value){
+        if(viewModelNota.banderaSwitch.value){
             texto = stringResource(R.string.convertir_a_nota );
         }
         Row (
@@ -79,8 +86,8 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
                 color = MaterialTheme.colorScheme.surface
             )
             Switch(
-                checked = viewModel.banderaSwitch.value,
-                onCheckedChange = {viewModel.banderaSwitch.value = it},
+                checked = viewModelNota.banderaSwitch.value,
+                onCheckedChange = {viewModelNota.banderaSwitch.value = it},
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
                     checkedTrackColor = Color.Gray,
@@ -90,7 +97,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             )
         }
         TextField(
-            value = viewModel.descripcion.value, onValueChange = { viewModel.descripcion.value = it},
+            value = viewModelNota.descripcion.value, onValueChange = { viewModelNota.descripcion.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
             modifier = Modifier
                 .height(100.dp)
@@ -104,7 +111,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             )
         )
         TextField(
-            value = viewModel.descripcionCuerpo.value, onValueChange = { viewModel.descripcionCuerpo.value = it},
+            value = viewModelNota.descripcionCuerpo.value, onValueChange = { viewModelNota.descripcionCuerpo.value = it},
             placeholder = { Text(text = stringResource(R.string.cuerpo)) },
             modifier = Modifier
                 .height(230.dp)
@@ -119,7 +126,7 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
             )
         )
         TextField(
-            value = viewModel.texto.value, onValueChange = { viewModel.texto.value = it},
+            value = viewModelNota.texto.value, onValueChange = { viewModelNota.texto.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
                 .height(230.dp)
@@ -167,18 +174,50 @@ fun AgregarNueva(navController: NavController,viewModel: viewModel){
                 )
             }
 
-            if(posponer and viewModel.banderaSwitch.value) {
-                PosponerTarea( onDismiss = { posponer = false })
+            if(posponer and viewModelNota.banderaSwitch.value) {
+                var tarea = Tarea(
+                    id = 0,
+                    titulo = viewModelNota.titulo.value,
+                    descripcion = viewModelNota.descripcion.value,
+                    cuerpo = viewModelNota.descripcionCuerpo.value,
+                    texto = viewModelNota.texto.value,
+                    fechaIncio = "",
+                    fechaFin = "",
+                    recordar = false,
+                    hecho = false
+                )
+                PosponerTarea(
+                    onDismiss = {
+                        posponer = false
+                    },
+                    viewModelTarea = viewModelTarea,
+                    tarea = tarea,
+                    onTareaGuardada = {
+                        viewModelNota.limpiarVariables()
+                        navController.navigate("tareas") {
+                            popUpTo("home") { inclusive = false }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
             }
 
             Button(
                 onClick = {
-                    if(viewModel.banderaSwitch.value == true) {
+                    if(viewModelNota.banderaSwitch.value == true) {
                         posponer = true
-                    }else if(viewModel.tituloVacio()){
-                        viewModel.savedNota()
-                        viewModel.limpiarVariables()
-                        navController.navigate("notas")
+                    }else if(viewModelNota.tituloVacio()){
+                        viewModelNota.savedNota()
+                        viewModelNota.limpiarVariables()
+                        navController.navigate("notas") {
+                            popUpTo("home") { inclusive = false }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }else{
+                        Toast.makeText(context,
+                            context.getString(R.string.escribe_un_titulo), Toast.LENGTH_SHORT).show()
                     }
                    },
                 colors = ButtonDefaults.buttonColors(

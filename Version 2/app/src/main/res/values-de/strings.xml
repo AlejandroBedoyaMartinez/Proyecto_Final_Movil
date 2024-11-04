@@ -19,5 +19,7 @@
     <string name="recordarme">Erinnere mich</string>
     <string name="editar">Bearbeiten</string>
     <string name="eliminar">Loschen</string>
+    <string name="escribe_un_titulo">Schreibe einen Titel</string>
+    <string name="ver">Zeigen</string>
 
 </resources>

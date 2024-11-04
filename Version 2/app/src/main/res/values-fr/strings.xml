@@ -23,4 +23,6 @@
     <string name="recordarme">Me rappeler</string>
     <string name="editar">Editer</string>
     <string name="eliminar">Supprimer</string>
+    <string name="escribe_un_titulo">Écris un titre</string>
+    <string name="ver">Ouvrir</string>
 </resources>

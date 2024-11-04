@@ -1,16 +1,16 @@
-package com.example.inventory
+package com.example.inventory.ui.nota
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.dataNota.notaRepository
-import com.example.inventory.ui.nota.Nota
+import com.example.inventory.dataNota.Nota
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class viewModel(
+class viewModelNota(
     private val notaRepository: notaRepository
 ) :ViewModel() {
     var query = mutableStateOf("")
@@ -21,10 +21,8 @@ class viewModel(
     var banderaSwitch = mutableStateOf(false)
     private val _notas: MutableStateFlow<List<Nota>> = MutableStateFlow(emptyList())
     val notas: StateFlow<List<Nota>> = _notas
-    /*private val _nota = MutableStateFlow<Nota?>(null)
-    val nota: StateFlow<Nota?> get() = _nota
-*/
     var nota: Nota = Nota(0,"","","","")
+
     init {
         viewModelScope.launch {
             notaRepository.getNotas().collect { notasList ->
@@ -80,9 +78,6 @@ class viewModel(
         }
     }
 
-
-
-
     fun tituloVacio(): Boolean {
         return if(titulo.value == "")false else true
     }
@@ -94,6 +89,4 @@ class viewModel(
         texto.value = ""
         banderaSwitch.value = false
     }
-
-
 }

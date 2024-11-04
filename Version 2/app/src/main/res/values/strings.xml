@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Inventory</string>
+    <string name="app_name" translatable="false">Registrar App</string>
     <string name="bienvenido">Welcome</string>
     <string name="pagina_de_inicio">Home Page</string>
     <string name="tareas">Tasks</string>
@@ -24,4 +24,6 @@
     <string name="recordarme">Remind me</string>
     <string name="editar">Edit</string>
     <string name="eliminar">Delete</string>
+    <string name="escribe_un_titulo">Write a title</string>
+    <string name="ver">View</string>
 </resources>

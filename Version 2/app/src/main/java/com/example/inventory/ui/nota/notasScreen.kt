@@ -3,6 +3,7 @@ package com.example.inventory.ui.nota
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,12 +44,12 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.example.inventory.ui.tarea.BuscarText
 import com.example.inventory.R
-import com.example.inventory.viewModel
+import com.example.inventory.dataNota.Nota
 
 
 @Composable
-fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
-    val notas by viewModel.notas.collectAsState()
+fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNota) {
+    val notas by viewModelNota.notas.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +62,7 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Row (Modifier.padding(top = 25.dp)) {
-                BuscarText(query = viewModel.query.value, onQueryChanged = { viewModel.query.value = it })
+                BuscarText(query = viewModelNota.query.value, onQueryChanged = { viewModelNota.query.value = it })
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -79,8 +80,9 @@ fun notasScreen(navHostController: NavHostController,viewModel: viewModel) {
                             navHostController.navigate("editarNota/$noteId")
                         },
                         onDeleteClick = {
-                            viewModel.deleteNota(viewModel.notas.value[it])
+                            viewModelNota.deleteNota(viewModelNota.notas.value[it])
                         },
+                        navHostController = navHostController
                     )
                 }
             }
@@ -107,7 +109,8 @@ fun NotaCuadro(
     nota: Nota,
     modifier: Modifier = Modifier,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    navHostController: NavHostController
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -118,6 +121,11 @@ fun NotaCuadro(
             .border(BorderStroke(1.dp, Color.Black))
             .padding(16.dp)
             .fillMaxWidth()
+            .clickable
+            {
+                val noteId = nota.id
+                navHostController.navigate("verNota/$noteId")
+            }
     ) {
         Row(
             Modifier.fillMaxWidth(),
@@ -178,8 +186,6 @@ fun NotaCuadro(
                     )
                 }
             }
-
-
         }
     }
 }

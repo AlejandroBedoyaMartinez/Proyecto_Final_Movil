@@ -1,4 +1,4 @@
-package com.example.inventory.ui.nota
+package com.example.inventory.dataNota
 
 import androidx.room.PrimaryKey
 

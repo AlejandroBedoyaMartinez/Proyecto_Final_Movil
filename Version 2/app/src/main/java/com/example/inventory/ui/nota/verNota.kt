@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -30,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inventory.R
+import com.example.inventory.R.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:Int){
-
+fun verNota(navController: NavController, viewModelNota: viewModelNota, id:Int){
     LaunchedEffect(id) {
         viewModelNota.getNota(id)
     }
@@ -48,18 +49,22 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             color = MaterialTheme.colorScheme.surface,
-            text = stringResource(R.string.editar),
-            style = MaterialTheme.typography.titleLarge
+            text = stringResource(R.string.ver),
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.height(5.dp))
         TextField(
-            value = viewModelNota.titulo.value, onValueChange = {
-                viewModelNota.titulo.value = it},
-            placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
+            value = viewModelNota.titulo.value,
+            onValueChange =
+            {
+                viewModelNota.titulo.value = it
+            },
+            enabled = false,
+            placeholder = { Text(text = stringResource(string.ingrese_el_t_tulo)) },
             modifier = Modifier
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
@@ -71,12 +76,13 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
             .size(10.dp))
         TextField(
             value = viewModelNota.descripcion.value, onValueChange = { viewModelNota.descripcion.value = it},
-            placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
+            enabled = false,
+            placeholder = { Text(text = stringResource(string.ingrese_la_descripcion)) },
             modifier = Modifier
                 .height(100.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
@@ -85,13 +91,14 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
         )
         TextField(
             value = viewModelNota.descripcionCuerpo.value, onValueChange = { viewModelNota.descripcionCuerpo.value = it},
-            placeholder = { Text(text = stringResource(R.string.cuerpo)) },
+            enabled = false,
+            placeholder = { Text(text = stringResource(string.cuerpo)) },
             modifier = Modifier
                 .height(250.dp)
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
@@ -100,73 +107,18 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
         )
         TextField(
             value = viewModelNota.texto.value, onValueChange = { viewModelNota.texto.value = it},
-            placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
+            enabled = false,
+            placeholder = { Text(text = stringResource(string.ingrese_el_texto)) },
             modifier = Modifier
                 .height(250.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
-        Row (
-            modifier = Modifier
-                .padding(vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ){
-            Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.LightGray
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(
-                    text = stringResource(R.string.tomar_foto),
-                    fontSize = 13.sp,
-                    color = Color.Black
-                )
-            }
-
-            Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.LightGray
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(
-                    text = stringResource(R.string.adjuntar_foto),
-                    fontSize = 13.sp,
-                    color = Color.Black
-                )
-            }
-
-            Button(
-                onClick = {
-                    if(viewModelNota.tituloVacio()){
-                        viewModelNota.editNota()
-                        viewModelNota.limpiarVariables()
-                        navController.navigate("notas")
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(
-                    text = stringResource(R.string.guardar),
-                    fontSize = 13.sp,
-                    color = Color.Black
-                )
-            }
-        }
     }
 }
