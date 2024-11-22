@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.room.Room
 import com.example.inventory.ui.theme.Proyecto_FinalTheme
 import com.example.inventory.dataNota.notaDb
@@ -15,6 +17,7 @@ import com.example.inventory.ui.tarea.ViewModelTarea
 
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dbNota= Room.databaseBuilder(this, notaDb::class.java,"nota_db").build()
@@ -29,7 +32,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Proyecto_FinalTheme {
-                    Nav(viewModelNota,viewModelTarea)
+                val windowSize = calculateWindowSizeClass(this)
+                    Nav(viewModelNota,viewModelTarea, windowSize = windowSize.widthSizeClass)
                 }
             }
         }

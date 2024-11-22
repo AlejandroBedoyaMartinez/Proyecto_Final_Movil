@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,10 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.zIndex
@@ -49,31 +50,38 @@ import com.example.inventory.dataNota.Nota
 
 
 @Composable
-fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNota) {
+fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNota, windowSizeClass: WindowWidthSizeClass) {
     val notas by viewModelNota.notas.collectAsState()
-    val configuration = LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp > 600
+
+
+    val columns =  when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> 2
+        WindowWidthSizeClass.Medium  -> 3
+        WindowWidthSizeClass.Expanded -> 4
+        else -> 1
+    }
+
+    val isCompact = windowSizeClass == WindowWidthSizeClass.Compact
+    val isMedium = windowSizeClass == WindowWidthSizeClass.Medium
+    val isExpanded = windowSizeClass == WindowWidthSizeClass.Expanded
+
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
+            .padding(horizontal = if (isExpanded) 0.dp else if (isMedium) 0.dp else 0.dp)
     ) {
-        Column(
+    Column(
             modifier = Modifier
-                .padding(10.dp, 10.dp)//
                 .fillMaxSize()
-                .padding(10.dp, 10.dp)
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Row (Modifier.padding(top = 25.dp)) {
                 BuscarText(query = viewModelNota.query.value, onQueryChanged = { viewModelNota.query.value = it })
             }
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(0.dp, 10.dp),
+                columns = GridCells.Fixed(columns),
+                modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -93,21 +101,28 @@ fun notasScreen(navHostController: NavHostController, viewModelNota: viewModelNo
             }
         }
 
-        Button(
-            onClick = { navHostController.navigate("agregarNueva") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(40.dp)
-                .zIndex(1f),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-            shape = RoundedCornerShape(1.dp),
-            border = BorderStroke(2.dp, Color.Black)
-        ) {
-            Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
-        }
+
+
+    Button(
+        onClick = { navHostController.navigate("agregarNueva") },
+        modifier = Modifier
+            .align((
+                    when {
+                        isCompact || isMedium -> Alignment.BottomEnd
+                        isExpanded -> Alignment.CenterEnd
+                        else -> Alignment.BottomEnd
+                    }))
+            .padding(end = 40.dp, bottom = if (isExpanded) 200.dp else 140.dp)
+            .zIndex(1f),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+        shape = RoundedCornerShape(1.dp),
+        border = BorderStroke(2.dp, Color.Black)
+    ) {
+        Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
     }
 }
 
+}
 
 @Composable
 fun NotaCuadro(
@@ -194,4 +209,6 @@ fun NotaCuadro(
         }
     }
 }
+
+
 

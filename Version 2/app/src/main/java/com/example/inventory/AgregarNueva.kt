@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -26,6 +27,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +51,7 @@ import com.example.inventory.ui.tarea.ViewModelTarea
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,viewModelTarea: ViewModelTarea){
+fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,viewModelTarea: ViewModelTarea, windowSizeClass: WindowWidthSizeClass){
 
     BackHandler {
             navController.popBackStack()
@@ -58,33 +60,28 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
     val context = LocalContext.current
 
 
-    val configuration = LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp > 600
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val scrollState = rememberScrollState()
-    val paddingValue = if (isTablet) 70.dp else 10.dp
-
-    // Define el padding general para toda la columna
-    val columnPadding = if (isTablet && !isLandscape) 16.dp else 0.dp
-
-
-
-
-    // Define el ancho de los TextFields
-    val textFieldWidth = when {
-        isTablet -> 500.dp
-        isLandscape -> 400.dp
-        else -> 300.dp
+    val textFieldWidth = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> 1f
+        WindowWidthSizeClass.Medium -> 0.8f
+        WindowWidthSizeClass.Expanded -> 0.6f
+        else -> 1f
     }
 
+    val horizontalPadding = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> 16.dp
+        WindowWidthSizeClass.Medium -> 24.dp
+        WindowWidthSizeClass.Expanded -> 32.dp
+        else -> 16.dp
+    }
+
+    val scrollState = rememberScrollState() //para el escroleado
 
     Column (
         Modifier
             .fillMaxSize()
-            .padding(columnPadding)
             .verticalScroll(scrollState)
             .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier
 
@@ -100,14 +97,17 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             onValueChange = { viewModelNota.titulo.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_t_tulo)) },
             modifier = Modifier
+                .fillMaxWidth(textFieldWidth)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
 
 
@@ -118,7 +118,8 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
         Row (
             Modifier
                 .align(Alignment.End)
-                .padding(end = paddingValue)){
+                .padding(horizontal = horizontalPadding)
+        ) {
             Text(
                 text = texto,
                 Modifier
@@ -140,52 +141,56 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             value = viewModelNota.descripcion.value, onValueChange = { viewModelNota.descripcion.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
             modifier = Modifier
-                .width(textFieldWidth)
+                .fillMaxWidth(textFieldWidth)
                 .height(100.dp)
-                .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         TextField(
             value = viewModelNota.descripcionCuerpo.value, onValueChange = { viewModelNota.descripcionCuerpo.value = it},
             placeholder = { Text(text = stringResource(R.string.cuerpo)) },
             modifier = Modifier
-                .width(textFieldWidth)
+                .fillMaxWidth(textFieldWidth)
                 .height(230.dp)
-                .padding(top = 10.dp)
-                .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         TextField(
             value = viewModelNota.texto.value, onValueChange = { viewModelNota.texto.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
+                .fillMaxWidth(textFieldWidth)
                 .height(230.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         Row (
             modifier = Modifier
                 .padding(vertical = 10.dp)
-                .padding(bottom = if (isTablet) 40.dp else 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(horizontal = horizontalPadding),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Button(
                 onClick = { /*TODO*/ },

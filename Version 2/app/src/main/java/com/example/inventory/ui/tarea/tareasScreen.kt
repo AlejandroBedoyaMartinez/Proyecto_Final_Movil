@@ -32,8 +32,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,109 +59,94 @@ import com.example.inventory.dataTarea.Tarea
 
 
 @Composable
-fun tareasScreen(navHostController: NavHostController, viewModelTarea: ViewModelTarea) {
+fun tareasScreen(
+    navHostController: NavHostController,
+    viewModelTarea: ViewModelTarea,
+    windowSizeClass: WindowWidthSizeClass
+) {
     val tareas by viewModelTarea.tareas.collectAsState()
 
-    val configuration = LocalConfiguration.current
-    val islandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val isTablet = configuration.screenWidthDp > 600
+    // Detectar tamaño de la pantalla
+    val isCompact = windowSizeClass == WindowWidthSizeClass.Compact
 
-    val columnPadding = if (isTablet && !islandscape) 16.dp else 0.dp
-    Column(
+    val Width = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> 10f  // Teléfonos en orientación vertical
+        WindowWidthSizeClass.Medium -> 14f // Tablets pequeñas o teléfonos en horizontal
+        WindowWidthSizeClass.Expanded -> 16f // Tablets grandes o escritorios
+        else -> 1f
+    }
+
+    val buttonAlignment = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> Alignment.BottomEnd // Botón en la esquina inferior derecha
+        WindowWidthSizeClass.Medium -> Alignment.BottomCenter // Botón centrado en pantallas medianas
+        WindowWidthSizeClass.Expanded -> Alignment.BottomCenter // Botón centrado en pantallas grandes
+        else -> Alignment.BottomEnd
+    }
+
+    Box(
         modifier = Modifier
-            .padding(columnPadding)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Row (Modifier.padding(top = if (isTablet) 25.dp else 15.dp)) {
-            BuscarText(query = viewModelTarea.query.value, onQueryChanged = { viewModelTarea.query.value = it })
-        }
-
-
-        if(isTablet) {
-
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(45.dp)
+                Modifier
+                    .padding(top = if (isCompact) 16.dp else 30.dp)
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                        .padding(16.dp)
-                ) {
-                    items(tareas.size) {
-                        val color = if (it % 2 == 0) Color.LightGray else Color.White
-                        GenerarTarea(
-                            tarea = tareas[it],
-                            colorFondo = color,
-                            checked = tareas[it].hecho,
-                            onCheckedChange = { check ->
-                                tareas[it].hecho = check
-                                viewModelTarea.editCheck(tareas[it])
-                                navHostController.navigate("tareas")
-                            },
-                            navHostController,
-                            viewModelTarea
-                        )
-                    }
-                }
-                Button(
-                    onClick = { navHostController.navigate("agregarNueva") },
-                    modifier = Modifier
-                        .align(Alignment.Bottom)
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                    shape = RoundedCornerShape(1.dp),
-                    border = BorderStroke(2.dp, Color.Black)
-                ) {
-                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
-                }
+                BuscarText(
+                    query = viewModelTarea.query.value,
+                    onQueryChanged = { viewModelTarea.query.value = it }
+                )
             }
 
-        }else{
-            Box(
+            LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ){
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(16.dp)
-                ) {
-                    items(tareas.size) {
-                        val color = if (it % 2 == 0) Color.LightGray else Color.White
-                        GenerarTarea(
-                            tarea = tareas[it],
-                            colorFondo = color,
-                            checked = tareas[it].hecho,
-                            onCheckedChange = { check ->
-                                tareas[it].hecho = check
-                                viewModelTarea.editCheck(tareas[it])
-                            },
-                            navHostController,
-                            viewModelTarea
-                        )
-                    }
-                }
-
-                Button(
-                    onClick = { navHostController.navigate("agregarNueva") },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                    shape = RoundedCornerShape(1.dp),
-                    border = BorderStroke(2.dp, Color.Black)
-                ) {
-                    Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
+                    .fillMaxHeight()
+                    .padding(start = if (isCompact) 10.dp else 20.dp)
+            ) {
+                items(tareas.size) {
+                    val color = if (it % 2 == 0) Color.LightGray else Color.White
+                    GenerarTarea(
+                        tarea = tareas[it],
+                        colorFondo = color,
+                        checked = tareas[it].hecho,
+                        onCheckedChange = { check ->
+                            tareas[it].hecho = check
+                            viewModelTarea.editCheck(tareas[it])
+                            navHostController.navigate("tareas")
+                        },
+                        navHostController,
+                        viewModelTarea
+                    )
                 }
             }
         }
+
+        // Botón flotante
+        Button(
+            onClick = { navHostController.navigate("agregarNueva") },
+            modifier = Modifier
+                .align( Alignment.BottomEnd )
+                .padding(
+                    bottom = if (isCompact) 30.dp else 75.dp,
+                    end = if (isCompact) 30.dp else 50.dp, // Espacio adicional desde el borde derecho
+                    top = 30.dp
+                ),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+            shape = RoundedCornerShape(8.dp),
+            border = BorderStroke(2.dp, Color.Black)
+        ) {
+            Text(text = stringResource(R.string.agregar_nueva), color = Color.Black)
         }
+
     }
+}
+
+
+
 
 
 
@@ -294,10 +281,12 @@ fun BuscarText(
             .padding(16.dp),
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.surface,
-            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-            cursorColor = MaterialTheme.colorScheme.surface,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Gray,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color.Gray,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.DarkGray
         ),
         textStyle = TextStyle(color = MaterialTheme.colorScheme.surface)
     )

@@ -21,8 +21,8 @@ plugins {
 }
 
 android {
-    compileSdk = 34
 
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.inventory"
         minSdk = 24
@@ -68,18 +68,26 @@ android {
 
 dependencies {
     // Import the Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
-    implementation("androidx.activity:activity-compose:1.8.1")
+    implementation(platform("androidx.compose:compose-bom:2024.11.00"))
+    implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.navigation:navigation-compose:2.8.4")
 
     //Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    implementation("androidx.compose.material3:material3-window-size-class-android:1.3.1")
+    implementation("androidx.compose.material3:material3:1.4.0-alpha04")
+    implementation("androidx.compose.material3:material3-window-size-class:1.4.0-alpha04")
+    implementation("androidx.compose.material:material-icons-core:1.7.5")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation("androidx.compose.ui:ui:1.8.0-alpha06")
+    implementation("androidx.compose.runtime:runtime:1.8.0-alpha06")
+    implementation("androidx.navigation:navigation-compose:2.9.0-alpha03")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 

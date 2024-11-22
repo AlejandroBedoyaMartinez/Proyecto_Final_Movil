@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -25,7 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.textFieldColors
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,10 +47,24 @@ import com.example.inventory.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:Int){
+fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:Int, windowSizeClass: WindowWidthSizeClass){
     LaunchedEffect(id) {
         viewModelTarea.getTarea(id)
     }
+
+    val textfieldWidth = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> 1f  // Teléfonos en orientación vertical
+        WindowWidthSizeClass.Medium -> 0.8f // Tablets pequeñas o teléfonos en horizontal
+        WindowWidthSizeClass.Expanded -> 0.6f // Tablets grandes o escritorios
+        else -> 1f
+    }
+
+    val scrollState = rememberScrollState() //para el escroleado
+    val textFieldHeightSmall = 100.dp
+    val textFieldPadding = 3.dp
+
+
+
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -78,8 +94,9 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
     Column (
         Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier.height(15.dp))
         Text(
@@ -93,7 +110,10 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                 viewModelTarea.titulo.value = it},
             placeholder = { Text(text = stringResource(R.string.escribe_un_titulo)) },
             modifier = Modifier
-                .background(Color.White)
+                //.background(Color.White)
+                .fillMaxWidth(textfieldWidth)
+                .height(textFieldHeightSmall)
+                .padding(textFieldPadding)
                 .border(BorderStroke(1.dp, Color.Black)),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.surface,
@@ -177,14 +197,19 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
             placeholder = { Text(text = stringResource(R.string.ingrese_la_descripcion)) },
             modifier = Modifier
                 .height(100.dp)
-                .background(Color.White)
+                //.background(Color.White)
+                .fillMaxWidth(textfieldWidth)
+                .height(textFieldHeightSmall)
+                .padding(textFieldPadding)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
-                 containerColor  = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         TextField(
             value = viewModelTarea.descripcionCuerpo.value, onValueChange = { viewModelTarea.descripcionCuerpo.value = it},
@@ -192,28 +217,38 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
             modifier = Modifier
                 .height(220.dp)
                 .padding(top = 10.dp)
-                .background(Color.White)
+                //.background(Color.White)
+                .fillMaxWidth(textfieldWidth)
+                .height(textFieldHeightSmall)
+                .padding(textFieldPadding)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         TextField(
             value = viewModelTarea.texto.value, onValueChange = { viewModelTarea.texto.value = it},
             placeholder = { Text(text = stringResource(R.string.ingrese_el_texto)) },
             modifier = Modifier
                 .height(220.dp)
-                .background(Color.White)
+                //.background(Color.White)
+                .fillMaxWidth(textfieldWidth)
+                .height(textFieldHeightSmall)
+                .padding(textFieldPadding)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+
         )
         Row (
             modifier = Modifier
