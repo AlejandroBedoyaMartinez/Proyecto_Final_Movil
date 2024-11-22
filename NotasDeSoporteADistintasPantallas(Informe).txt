@@ -1,0 +1,20 @@
+Inicio (Listo) 
+
+Notas(listo)
+
+Tareas(listo)
+
+////funcionalidad //////////
+
+Tareas:
+que se escoja la fecha, o agregar una pantalla especifica para tareas
+
+//////////////////////////////////////7
+
+Entonces: 
+Faltaria mejorar unos texflields cuanto a estetica de Notas. 
+
+
+Nota: Esta version ya tiene lo que se adapto en main de ---> Se implemento la Base de datos,agregar y ver notas,soporte para idiomas <---
+
+

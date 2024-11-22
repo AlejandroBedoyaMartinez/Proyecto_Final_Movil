@@ -1,0 +1,63 @@
+<<<<<<< HEAD
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Proyecto_Final</string>
+    <string name="bienvenido">Welcome</string>
+    <string name="pagina_de_inicio">Home Page</string>
+    <string name="tareas">Tasks</string>
+    <string name="notas">Notes</string>
+    <string name="proximos_eventos_del_mes">Upcoming events of the month</string>
+    <string name="agregar_nueva">Add new</string>
+    <string name="buscar">Search</string>
+    <string name="ingrese_el_t_tulo">Enter the title</string>
+    <string name="convertir_a_nota">Convert to Note</string>
+    <string name="convertir_a_tarea">Convert to Task</string>
+    <string name="ingrese_la_descripcion">Enter the description</string>
+    <string name="cuerpo">Body</string>
+    <string name="ingrese_el_texto">Enter the text</string>
+    <string name="tomar_foto">Take Photo</string>
+    <string name="adjuntar_foto">Attach Photo</string>
+    <string name="guardar">Save</string>
+    <string name="posponer_tarea">Postpone Task:</string>
+    <string name="nueva_fecha_de_inicio">New Start Date:</string>
+    <string name="elegir_fecha">Choose Date</string>
+    <string name="nueva_fecha_de_fin">New End Date:</string>
+    <string name="recordarme">Remind me</string>
+=======
+<resources>
+
+
+    <string name="app_name">app name</string>
+    <string name="buscar">Search</string>
+    <string name="agregar_nueva_nota">Add new</string>
+    <string name="proximos_eventos_este_mes">Upcoming events this month</string>
+    <string name="bienvenido">Welcome</string>
+    <string name="homescreen">Homescreen</string>
+    <string name="notas">Notes</string>
+    <string name="convertir_a">Turn into</string>
+    <string name="tomar_foto">Take photo</string>
+    <string name="adjuntar_foto">Attach photo</string>
+    <string name="guardar">Save</string>
+    <string name="posponer_tarea">Sonoze Task</string>
+    <string name="nueva_fecha_de_inicio">New start date</string>
+    <string name="escoger_fecha">Pick date</string>
+    <string name="icono_calendario">Calendar icon</string>
+    <string name="tareas">Tasks</string>
+    <string name="agregar_nueva">Add new</string>
+    <string name="titulo">Title</string>
+    <string name="recordarme">Rememer me</string>
+    <string name="guardarT">Save</string>
+    <string name="nueva_fecha_de_fin">End Date</string>
+    <string name="escoger_fechaT">Pick Date</string>
+    <string name="tu_texto_aqui">Write here</string>
+    <string name="descripcion">Description</string>
+    <string name="seleccionar_fecha_de_inicio">Select start date</string>
+    <string name="seleccionar_fecha_de_fin">Select end date</string>
+    <string name="imagenusuario">User image</string>
+    <string name="agregar">Add</string>
+    <string name="descripcionNota">Description</string>
+    <string name="opciones">Options</string>
+    <string name="icono_calendarioPosTarea">Calendar icon</string>
+    <string name="icono_de_b_squeda">Search icon</string>
+>>>>>>> 5c533b3b2d7bee65f9a97f763631e4fa47dccb23
+</resources>
