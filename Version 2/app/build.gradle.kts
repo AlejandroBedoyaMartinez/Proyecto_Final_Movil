@@ -88,6 +88,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.8.0-alpha06")
     implementation("androidx.compose.runtime:runtime:1.8.0-alpha06")
     implementation("androidx.navigation:navigation-compose:2.9.0-alpha03")
+    implementation("androidx.core:core:1.15.0")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 

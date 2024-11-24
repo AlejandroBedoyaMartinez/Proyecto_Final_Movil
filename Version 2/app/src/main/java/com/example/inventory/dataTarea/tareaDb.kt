@@ -8,5 +8,5 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class tareaDb:RoomDatabase() {
-    abstract val dao:tareaDao
+    abstract fun tareaDao(): tareaDao
 }

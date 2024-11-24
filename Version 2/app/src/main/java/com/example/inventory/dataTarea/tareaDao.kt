@@ -26,4 +26,11 @@ interface tareaDao {
 
     @Query("SELECT * from tareaEntity WHERE id = :id")
     fun getTarea(id: Int): Flow<tareaEntity>
+
+    @Query("SELECT * FROM tareaEntity WHERE fechaFin <= :cuatroHorasAntes")
+    fun obtenerTareasPorNotificar(cuatroHorasAntes: Long): List<tareaEntity>
+
+    @Query("SELECT * FROM tareaEntity WHERE recordar = 1 AND fechaFin BETWEEN :inicioDelDia AND :finDelDia")
+    fun obtenerTareasVencenHoy(inicioDelDia: Long, finDelDia: Long): List<tareaEntity>
+
 }
