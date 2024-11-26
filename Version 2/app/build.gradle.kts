@@ -86,4 +86,10 @@ dependencies {
     // Testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+
+    // ExoPlayer
+    implementation("com.google.android.exoplayer:exoplayer:2.15.1")
+
+    // Coil. Para cargar imagenes de manera asyncrona
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

@@ -1,19 +1,28 @@
 package com.example.inventory
 
 import android.content.res.Configuration
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +37,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.inventory.dataNota.Nota
 import com.example.inventory.dataTarea.Tarea
 import com.example.inventory.ui.nota.viewModelNota
@@ -181,14 +192,80 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
         )
+
+        val imageUriList = remember { mutableStateListOf<Uri?>() }
+
+        var uri : Uri? = null
+        // 1
+        var hasImage by remember {
+            mutableStateOf(false)
+        }
+        var hasVideo by remember {
+            mutableStateOf(false)
+        }
+        // 2
+        var imageUri by remember {
+            mutableStateOf<Uri?>(null)
+        }
+
+
+        val imagePicker = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                hasImage = uri != null
+                imageUri = uri
+                imageUriList.add(imageUri)
+            }
+        )
+
+        val cameraLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicture(),
+            onResult = { success ->
+                if(success) imageUri = uri
+                imageUriList.add(imageUri)
+                hasImage = success
+            }
+        )
+
+        val context = LocalContext.current
+
+
+        if ((hasImage or hasVideo) && imageUri != null) {
+            // 5
+            if (hasImage) {
+                Column {
+                    for (uri in imageUriList) {
+                        if (uri != null) {
+                            Box(Modifier.width(230.dp)) {
+                                AsyncImage(
+                                    model = uri,
+                                    contentDescription = "Selected image",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            if (hasVideo) {
+                VideoPlayer(videoUri = imageUri!!)
+            }
+        }
         Row (
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .padding(bottom = if (isTablet) 40.dp else 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ){
+
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    uri = ComposeFileProvider.getImageUri(context)
+                    //imageUri = uri
+                    cameraLauncher.launch(uri!!)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
                 ),
@@ -203,7 +280,9 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             }
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    imagePicker.launch("image/*")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
                 ),
@@ -277,6 +356,23 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             }
         }
     }
+
 }
 
-
+@Composable
+fun crearImg(uri: Uri?) {
+    if (uri != null) {
+        Box(Modifier.width(230.dp)) {
+            AsyncImage(
+                model = uri,
+                contentDescription = "Selected image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+        }
+    } else {
+        // Mostrar algo alternativo si la imagen no es válida
+        Text("No image")
+    }
+}
