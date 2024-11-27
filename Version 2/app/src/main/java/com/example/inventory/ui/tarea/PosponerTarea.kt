@@ -189,8 +189,6 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                                     viewModelTarea.fechaInicio.value = fechaInicio
                                     viewModelTarea.fechaFin.value = fechaFin
                                 }
-
-                                viewModelTarea.savedTarea()
                                 onTareaGuardada()
                             }else{
                                 Toast.makeText(context,

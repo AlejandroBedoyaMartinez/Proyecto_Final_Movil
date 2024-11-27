@@ -14,5 +14,6 @@ data class tareaEntity(
     val fechaIncio:String,
     val fechaFin:String,
     val recordar:Boolean,
-    val hecho:Boolean
-    )
+    val hecho:Boolean,
+    val imagenes: List<String> = emptyList()
+)

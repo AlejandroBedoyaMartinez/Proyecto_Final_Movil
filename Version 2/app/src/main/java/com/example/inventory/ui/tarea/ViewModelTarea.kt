@@ -60,7 +60,7 @@ class ViewModelTarea(
         }
     }
 
-    fun savedTarea()
+    fun savedTarea(imagenes:List<String>)
     {
         val tarea= Tarea(
             titulo = titulo.value,
@@ -70,14 +70,15 @@ class ViewModelTarea(
             fechaIncio = fechaInicio.value,
             fechaFin = fechaFin.value,
             recordar = recordar.value,
-            hecho = false
+            hecho = false,
+            imagenes = imagenes
         )
         viewModelScope.launch {
             tareaRepository.insertTarea(tarea)
         }
     }
 
-    fun editTarea()
+    fun editTarea(imagenes:List<String>)
     {
         val tareaActualizar= Tarea(
             id = tarea.id,
@@ -88,7 +89,8 @@ class ViewModelTarea(
             fechaIncio = fechaInicio.value,
             fechaFin = fechaFin.value,
             recordar = recordar.value,
-            hecho = hecho.value
+            hecho = hecho.value,
+            imagenes = imagenes
         )
         viewModelScope.launch {
             tareaRepository.editTarea(tareaActualizar)
