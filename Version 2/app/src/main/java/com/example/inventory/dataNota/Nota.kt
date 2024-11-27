@@ -8,5 +8,7 @@ data class Nota (
     val titulo:String,
     val descripcion:String,
     val cuerpo:String,
-    val texto:String
+    val texto:String,
+    val imagenes: List<String> = emptyList()
+
 )

@@ -7,7 +7,7 @@ class notaRepository(
     private val notaDao: notaDao
 ) {
     fun getNotas(): Flow<List<Nota>> {
-        return notaDao.getAllNotes() // getAllNotes debe retornar Flow<List<NotaEntity>>
+        return notaDao.getAllNotes()
             .map { entities ->
                 entities.map { entity ->
                     Nota(
@@ -15,7 +15,8 @@ class notaRepository(
                         titulo = entity.titulo,
                         descripcion = entity.descripcion,
                         cuerpo = entity.cuerpo,
-                        texto = entity.texto
+                        texto = entity.texto,
+                        imagenes = entity.imagenes
                     )
                 }
             }
@@ -29,20 +30,22 @@ class notaRepository(
                     titulo = entity.titulo,
                     descripcion = entity.descripcion,
                     cuerpo = entity.cuerpo,
-                    texto = entity.texto
+                    texto = entity.texto,
+                    imagenes = entity.imagenes
                 )
             }
     }
 
 
     suspend fun insertNota(nota: Nota){
-    val entity = notaEntity(
-        id = nota.id,
-        titulo = nota.titulo,
-        descripcion = nota.descripcion,
-        cuerpo = nota.cuerpo,
-        texto = nota.texto
-    )
+        val entity = notaEntity(
+            id = nota.id,
+            titulo = nota.titulo,
+            descripcion = nota.descripcion,
+            cuerpo = nota.cuerpo,
+            texto = nota.texto,
+            imagenes = nota.imagenes
+        )
         notaDao.insert(entity)
     }
 
@@ -52,7 +55,8 @@ class notaRepository(
             titulo = nota.titulo,
             descripcion = nota.descripcion,
             cuerpo = nota.cuerpo,
-            texto = nota.texto
+            texto = nota.texto,
+            imagenes = nota.imagenes
         )
         notaDao.delete(entity)
     }
@@ -63,7 +67,8 @@ class notaRepository(
             titulo = nota.titulo,
             descripcion = nota.descripcion,
             cuerpo = nota.cuerpo,
-            texto = nota.texto
+            texto = nota.texto,
+            imagenes = nota.imagenes
         )
         notaDao.update(entity)
     }

@@ -1,5 +1,6 @@
 package com.example.inventory
 
+import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
@@ -56,6 +57,7 @@ import com.example.inventory.dataTarea.Tarea
 import com.example.inventory.ui.nota.viewModelNota
 import com.example.inventory.ui.tarea.PosponerTarea
 import com.example.inventory.ui.tarea.ViewModelTarea
+import java.io.File
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -324,13 +326,24 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                     }
                 )
             }
+            val context = LocalContext.current
 
             Button(
                 onClick = {
                     if(viewModelNota.banderaSwitch.value == true) {
                         posponer = true
                     }else if(viewModelNota.tituloVacio()){
-                        viewModelNota.savedNota()
+                        var imagenes: List<String> = emptyList()
+
+                        imagenes = imageUriList.mapNotNull { uri ->
+                            uri?.let {
+                                saveImageToInternalStorage(context, uri)
+                            }
+                        }
+
+                        viewModelNota.savedNota(imagenes)
+
+
                         viewModelNota.limpiarVariables()
                         navController.navigate("notas") {
                             popUpTo("home") { inclusive = false }
@@ -356,23 +369,24 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             }
         }
     }
-
 }
 
-@Composable
-fun crearImg(uri: Uri?) {
-    if (uri != null) {
-        Box(Modifier.width(230.dp)) {
-            AsyncImage(
-                model = uri,
-                contentDescription = "Selected image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-        }
-    } else {
-        // Mostrar algo alternativo si la imagen no es válida
-        Text("No image")
+fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri)
+    val fileName = "image_${System.currentTimeMillis()}.jpg"
+    val file = File(context.filesDir, fileName)
+
+    return try {
+        val outputStream = file.outputStream()
+        inputStream?.copyTo(outputStream)
+        inputStream?.close()
+        outputStream.close()
+        file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }
+
+

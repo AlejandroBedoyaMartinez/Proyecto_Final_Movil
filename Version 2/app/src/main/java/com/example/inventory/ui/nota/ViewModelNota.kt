@@ -44,20 +44,21 @@ class viewModelNota(
         }
     }
 
-    fun savedNota()
+    fun savedNota(imagenes:List<String>)
     {
         val nota= Nota(
             titulo = titulo.value,
             descripcion = descripcion.value,
             cuerpo = descripcionCuerpo.value,
             texto = texto.value,
+            imagenes = imagenes
             )
         viewModelScope.launch {
             notaRepository.insertNota(nota)
         }
     }
 
-    fun editNota()
+    fun editNota(imagenes: List<String>)
     {
         val notaActualizar= Nota(
             id = nota.id,
@@ -65,6 +66,7 @@ class viewModelNota(
             descripcion = descripcion.value,
             cuerpo = descripcionCuerpo.value,
             texto = texto.value,
+            imagenes = imagenes
         )
         viewModelScope.launch {
             notaRepository.editNota(notaActualizar)
@@ -81,6 +83,7 @@ class viewModelNota(
     fun tituloVacio(): Boolean {
         return if(titulo.value == "")false else true
     }
+
 
     fun limpiarVariables() {
         titulo.value = ""
