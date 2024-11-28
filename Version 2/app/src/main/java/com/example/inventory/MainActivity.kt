@@ -1,18 +1,26 @@
 package com.example.inventory
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.remember
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.example.inventory.ui.theme.Proyecto_FinalTheme
@@ -24,19 +32,43 @@ import com.example.inventory.ui.nota.viewModelNota
 import com.example.inventory.ui.tarea.ViewModelTarea
 
 
+
 class MainActivity : ComponentActivity() {
 
    //crear el canal
     val channelID = "tareas_channel"
     val channelName = "Notificaciones de Tareas"
 
+    // Launcher para solicitar permisos
+     val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            // Informar al usuario que el permiso es necesario
+            Toast.makeText(this, "Permiso para notificaciones es requerido, para avisarte >:( .", Toast.LENGTH_SHORT).show()
+        }
+    }
 
+
+
+    // Verificar y solicitar el permiso de notificaciones
+    fun checkNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Solicitar el permiso
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        checkNotificationPermission()
 
         val dbNota= Room.databaseBuilder(this, notaDb::class.java,"nota_db").build()
         val daoNota=dbNota.dao
@@ -49,10 +81,16 @@ class MainActivity : ComponentActivity() {
         val viewModelTarea = ViewModelTarea(repositoryTarea)
         enableEdgeToEdge()
         setContent {
+            val viewModelTarea = remember { ViewModelTarea(repositoryTarea) }
             Proyecto_FinalTheme {
+
+
                 val windowSize = calculateWindowSizeClass(this)
-                    Nav(viewModelNota,viewModelTarea, windowSize = windowSize.widthSizeClass)
+
+                    Nav(viewModelNota,viewModelTarea, windowSize = windowSize.widthSizeClass )
                 }
+
+
             }
 
         //construir el canal
@@ -66,9 +104,6 @@ class MainActivity : ComponentActivity() {
         manager.createNotificationChannel(channel)
 
 
-        //configurando notificacion
-            //en el viewmodel de tarea y en un archivo llamado NotificationManager.kt y ViewModelTarea
-        }
 
-
+    }
 }

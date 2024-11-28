@@ -1,7 +1,12 @@
 package com.example.inventory.ui.tarea
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.icu.util.Calendar
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,12 +27,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
+import com.example.inventory.MainActivity
 import com.example.inventory.R
 import com.example.inventory.dataTarea.Tarea
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Tarea, onTareaGuardada: () -> Unit) {
+
+    val context = LocalContext.current
+    // ssi el cuadro de diálogo ha sido mostrado
+    var isDialogShown by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(context, "Permiso concedido para notificaciones.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Permiso denegado para notificaciones.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
     Dialog(onDismissRequest = onDismiss) {
         viewModelTarea.llenarDatos(tarea)
         val context = LocalContext.current
@@ -52,6 +78,8 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                 fechaFin = "$selectedDayOfMonth/${selectedMonth + 1}/$selectedYear"
             }, year, month, day
         )
+
+
 
         Surface(
             modifier = Modifier
@@ -168,9 +196,26 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
+
                     Checkbox(
                         checked = viewModelTarea.recordar.value,
-                        onCheckedChange = { viewModelTarea.recordar.value = it}
+                        onCheckedChange = { checked ->
+                            viewModelTarea.recordar.value = checked
+                            if (checked) {
+                                isDialogShown = true
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "No se requiere permiso para notificaciones en esta versión.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+
+
                     )
                     Text(text = stringResource(R.string.recordarme),Modifier.align(Alignment.CenterVertically))
                 }

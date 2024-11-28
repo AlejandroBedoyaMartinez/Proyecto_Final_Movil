@@ -1,93 +1,55 @@
 package com.example.inventory.notifications
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.room.Room
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.inventory.R
-import com.example.inventory.dataTarea.tareaDb
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
-class NotificationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
+class NotificationWorker(appContext: Context, workerParams: WorkerParameters) :
+    Worker(appContext, workerParams) {
     override fun doWork(): Result {
-        val tipo = inputData.getString("tipo") ?: ""
+        val titulo = inputData.getString("titulo") ?: "Recordatorio"
+        val mensaje = inputData.getString("mensaje") ?: "Tienes tareas pendientes."
 
-        return try {
-            if (tipo == "recordatorio_diario") {
-                enviarNotificacionesDiarias()
-            } else {
-                val titulo = inputData.getString("titulo") ?: "Tarea"
-                val mensaje = inputData.getString("mensaje") ?: "Nueva notificación"
-                mostrarNotificacion(titulo, mensaje)
-            }
-            Result.success()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure()
+        // Verificar si el permiso de notificaciones está concedido
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return Result.failure() // No se puede mostrar la notificación sin permiso
         }
-    }
 
-
-
-
-    private fun enviarNotificacionesDiarias() {
-
-        val tareaDb = Room.databaseBuilder(
-            applicationContext,
-            tareaDb::class.java,
-            "tareaDb"
-        ).build()
-
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        // Inicio y fin del día actual
-        val inicioDelDia = calendar.timeInMillis
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
-        val finDelDia = calendar.timeInMillis
-
-        // Obtener las tareas desde el DAO
-        val tareasHoy = tareaDb.tareaDao().obtenerTareasVencenHoy(inicioDelDia, finDelDia)
-
-        for (tarea in tareasHoy) {
-            mostrarNotificacion(
-                "Tarea vence hoy",
-                "La tarea '${tarea.titulo}' vence hoy a las 5 PM."
-            )
-        }
-    }
-
-    private fun mostrarNotificacion(titulo: String, mensaje: String) {
-        val notificationManager =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        // Mostrar la notificación
+        val notificationManager = NotificationManagerCompat.from(applicationContext)
         val notificationId = System.currentTimeMillis().toInt()
 
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, "tareas_channel")
-            .setSmallIcon(R.drawable.troste)
+        val notification = NotificationCompat.Builder(applicationContext, "tareas_channel")
+            .setSmallIcon(R.drawable.troste) // Asegúrate de tener un ícono válido
             .setContentTitle(titulo)
             .setContentText(mensaje)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(mensaje))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
+            .build()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "tareas_channel",
-                "Recordatorios de Tareas",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
+        notificationManager.notify(notificationId, notification)
 
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        return Result.success()
     }
+
 }

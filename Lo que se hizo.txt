@@ -7,35 +7,14 @@ https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-siz
 
 
 1.En el manActivity.kt
-
-2. en NotificationWorker:
-
-Notifica al usuario sobre las tareas que vencen el día actual.
-Muestra recordatorios específicos según los parmetros proporcionados.
-Utiliza WorkManager para asegurarse de que las notificaciones se envíen incluso si la aplicación no está abierta.
+	se creo el canal y se pide permiso al abrir la app.
 
 2. YViewModelTarea:
-Configura notificaciones automaticas para las tareas que tienen activado el recordatorio.
-Programación de recordatorios diarios y especiificos para cada tarea.
 
+Configura notificacion si la tarea se vence hoy ----> (listo)
+Solicitar, el permiso para enviar notificacioes al habilitar el check ---> (Listo :)).
 
-------------------Como funcionan---------------------------
+Configura notificaciones automaticas 4 horas antes del vencimiento ----> (1/2)
 
-Al Guardar una nueva tarea....
-
-1. Notificacion inmediata --- primer tipo de notificacion
-El usuario ingresa una tarea con título, descripción y fecha de vencimiento.
-Si la tarea tiene activado el recordatorio y si vence el mismo día, se programa una notificación inmediata.
-
-2. Se programa una notificación 4 horas antes de que venza. ----Segundo tipo de notificacion
-
-3. Notificacion diaria ---- tercer tipo de notificacion
-
-Cada vez que se inicializa el ViewModelTarea (init), se configura un WorkRequest para enviar un recordatorio diario de todas las tareas pendientes para ese día.
-
-
-
-Mostrar notificacion ----------------------------------------------------
-Cuando WorkManager ejecuta el NotificationWorker:
-Se construye una notificación con los datos recibidos (título, mensaje, tipo).
+Programación de recordatorios diarios y especiificos para cada tarea a las 5pm ---->  (aun por arreglar)
 

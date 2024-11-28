@@ -1,12 +1,18 @@
 package com.example.inventory.ui.tarea
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.inventory.MainActivity
 import com.example.inventory.dataTarea.Tarea
 import com.example.inventory.dataTarea.tareaRepository
 import com.example.inventory.notifications.NotificationWorker
@@ -82,13 +88,16 @@ class ViewModelTarea(
         )
         viewModelScope.launch {
             tareaRepository.insertTarea(nuevaTarea)
-            programarNotificacion(nuevaTarea) // Programar notificaciones regulares
+
+            programarNotificacion(nuevaTarea) // al momenteo
+
 
             // Notificación inmediata si vence hoy
             val dueDateMillis = convertirFechaAMillis(nuevaTarea.fechaFin)
             val hoy = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(System.currentTimeMillis())
             val fechaTarea = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(dueDateMillis ?: 0)
 
+            // Si la tarea tiene la opción de recordar activada y vence hoy, enviar notificación inmediata
             if (nuevaTarea.recordar && hoy == fechaTarea) {
                 programarWorker(
                     delay = 0, // Notificación inmediata
@@ -96,11 +105,34 @@ class ViewModelTarea(
                     mensaje = "La tarea '${nuevaTarea.titulo}' debe completarse hoy."
                 )
             }
+
+            // También programar una notificación para el vencimiento de la tarea, si aplica
+            if (nuevaTarea.recordar && nuevaTarea.fechaFin.isNotEmpty() && !nuevaTarea.hecho) {
+                val dueDateMillis = convertirFechaAMillis(nuevaTarea.fechaFin) ?: return@launch
+                val now = System.currentTimeMillis()
+
+                // Si la tarea vence dentro de 4 horas, programar una notificación
+                val cuatroHorasAntes = dueDateMillis - TimeUnit.HOURS.toMillis(1)
+                if (cuatroHorasAntes > now) {
+                    val delayCuatroHoras = cuatroHorasAntes - now
+                    Log.d("Notificacion", "Programando notificación para tarea '${nuevaTarea.titulo}' 4 horas antes del vencimiento")
+                    programarWorker(
+                        delay = delayCuatroHoras,
+                        titulo = "Tarea pendiente",
+                        mensaje = "La tarea '${nuevaTarea.titulo}' se vence mañana."
+                    )
+                }
+            }
         }
     }
 
 
+
+
+
+    // funcion de Notificación inmediata si vence hoy
     fun programarWorker(delay: Long, titulo: String, mensaje: String) {
+        Log.d("Notificacion", "Programando notificación: Título='$titulo', Mensaje='$mensaje', Delay=${delay}ms")
         val data = Data.Builder()
             .putString("titulo", titulo)
             .putString("mensaje", mensaje)
@@ -172,7 +204,7 @@ class ViewModelTarea(
         hecho.value = false
     }
 
-
+    // Notificación 4 horas antes dl dia siguente que es cuando vence
     fun programarNotificacion(tarea: Tarea) {
         try {
             if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
@@ -201,27 +233,72 @@ class ViewModelTarea(
         val ahora = System.currentTimeMillis()
         val calendar = Calendar.getInstance().apply {
             timeInMillis = ahora
-            set(Calendar.HOUR_OF_DAY, 17) // 5 PM
+            set(Calendar.HOUR_OF_DAY, 17) // Programar a las 5 pm
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
 
         if (calendar.timeInMillis < ahora) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1) // Programar para mañana si ya pasó hoy
+            calendar.add(Calendar.DAY_OF_YEAR, 1) // Si ya pasó hoy, programar para mañana
         }
 
         val delay = calendar.timeInMillis - ahora
-        val data = Data.Builder()
-            .putString("tipo", "recordatorio_diario")
-            .build()
 
-        val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .setInputData(data)
-            .build()
+        viewModelScope.launch {
+            // Obtener tareas pendientes desde el repositorio
+            val tareasPendientes = _tareas.value.filter { tarea ->
+                !tarea.hecho && convertirFechaAMillis(tarea.fechaFin)?.let { it >= ahora } == true
+            }
 
-        WorkManager.getInstance().enqueue(notificationWorkRequest)
+            if (tareasPendientes.isNotEmpty()) {
+                // Programar una notificación separada por cada tarea pendiente
+                tareasPendientes.forEach { tarea ->
+                    // Construir mensaje para cada tarea
+                    val mensaje = "Tienes una tarea pendiente: ${tarea.titulo}"
+
+                    // Crear un identificador único para cada tarea (puede ser el ID de la tarea)
+                    val notificationId = tarea.id
+
+                    // Crear los datos para la notificación
+                    val data = Data.Builder()
+                        .putString("titulo", "Tarea pendiente: ${tarea.titulo}")
+                        .putString("mensaje", mensaje)
+                        .build()
+
+                    // Configurar el retraso para la notificación
+                    val workerDelay = calcularRetrasoParaNotificacion(tarea, ahora)
+
+                    // Programar la notificación con WorkManager
+                    val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+                        .setInitialDelay(workerDelay, TimeUnit.MILLISECONDS)
+                        .setInputData(data)
+                        .build()
+
+                    // Enviar la tarea al WorkManager
+                    WorkManager.getInstance().enqueue(notificationWorkRequest)
+
+                    Log.d("Notificacion", "Programando notificación para tarea '${tarea.titulo}' con retraso de $workerDelay ms")
+                }
+            }
+        }
     }
+
+    // Función auxiliar para calcular el retraso de la notificación según la tarea
+    fun calcularRetrasoParaNotificacion(tarea: Tarea, ahora: Long): Long {
+        // Calcular la fecha de vencimiento de la tarea en milisegundos
+        val dueDateMillis = convertirFechaAMillis(tarea.fechaFin) ?: return 0
+
+        // Asegurarse de que la tarea se programe para el momento correcto
+        val retraso = dueDateMillis - ahora
+
+        return if (retraso > 0) {
+            retraso
+        } else {
+            // Si la fecha ya pasó, no programar la notificación (o programar para el siguiente día, según tu lógica)
+            0
+        }
+    }
+
 
 
 
@@ -236,40 +313,9 @@ class ViewModelTarea(
         }
     }
 
-    //    fun programarNotificacion(tarea: Tarea) {
-//        try {
-//            Log.d("Notificacion", "Inicio de programarNotificacion")
-//
-//            if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
-//                Log.d("Notificacion", "Tarea requiere recordatorio: ${tarea.titulo}")
-//
-//                val dueDateMillis = convertirFechaAMillis(tarea.fechaFin)
-//                if (dueDateMillis == null) {
-//                    Log.e("Notificacion", "Fecha inválida: ${tarea.fechaFin}")
-//                    return
-//                }
-//
-//                val delay = getDelayForNotification(dueDateMillis)
-//                Log.d("Notificacion", "Delay calculado: $delay ms")
-//
-//                val data = Data.Builder()
-//                    .putString("titulo", "Tarea cerca de la entrega")
-//                    .putString("mensaje", "La tarea '${tarea.titulo}' vence pronto!.")
-//                    .build()
-//
-//                // mostrar notificación inmediata que quiere decir que se vence el mismo dia
-//                val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
-//                    .setInitialDelay(if (delay > 0) delay else 0, TimeUnit.MILLISECONDS)
-//                    .setInputData(data)
-//                    .build()
-//
-//                WorkManager.getInstance().enqueue(notificationWorkRequest)
-//                Log.d("Notificacion", "Notificación ${if (delay > 0) "programada" else "inmediata"} para '${tarea.titulo}'")
-//            } else {
-//                Log.d("Notificacion", "Tarea no requiere recordatorio o fecha vacía")
-//            }
-//        } catch (e: Exception) {
-//            Log.e("Notificacion", "Error al programar notificación", e)
-//        }
-//    }
+    //1. pedir permiso para mostrar notificaciones, a la hoora de querer guardar una tarea y esta tenga habilitado el check de recordarme.
 }
+
+
+
+
