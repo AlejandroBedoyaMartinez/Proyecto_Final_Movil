@@ -173,8 +173,6 @@ fun verNota(navController: NavController, viewModelNota: viewModelNota, id: Int)
                 }
             }
 
-
-
             val imageUriList = remember { mutableStateListOf<Uri?>() }
 
             LaunchedEffect(viewModelNota.nota.imagenes) {

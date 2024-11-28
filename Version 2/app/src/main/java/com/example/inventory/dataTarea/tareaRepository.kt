@@ -21,7 +21,8 @@ class tareaRepository(
                         fechaFin = entity.fechaFin,
                         recordar = entity.recordar,
                         hecho = entity.hecho,
-                        imagenes =  entity.imagenes
+                        imagenes =  entity.imagenes,
+                        videos =  entity.videos
                     )
                 }
             }
@@ -40,7 +41,8 @@ class tareaRepository(
                     fechaFin = entity.fechaFin,
                     recordar = entity.recordar,
                     hecho = entity.hecho,
-                    imagenes =  entity.imagenes
+                    imagenes =  entity.imagenes,
+                    videos =  entity.videos
                 )
             }
     }
@@ -57,7 +59,9 @@ class tareaRepository(
             fechaFin = tarea.fechaFin,
             recordar = tarea.recordar,
             hecho = tarea.hecho,
-            imagenes = tarea.imagenes
+            imagenes = tarea.imagenes,
+            videos =  tarea.videos
+
         )
         tareaDao.insert(entity)
     }
@@ -73,7 +77,8 @@ class tareaRepository(
             fechaFin = tarea.fechaFin,
             recordar = tarea.recordar,
             hecho = tarea.hecho,
-            imagenes = tarea.imagenes
+            imagenes = tarea.imagenes,
+            videos =  tarea.videos
         )
         tareaDao.delete(entity)
     }
@@ -89,7 +94,8 @@ class tareaRepository(
             fechaFin = tarea.fechaFin,
             recordar = tarea.recordar,
             hecho = tarea.hecho,
-            imagenes = tarea.imagenes
+            imagenes = tarea.imagenes,
+            videos =  tarea.videos
         )
         tareaDao.update(entity)
     }

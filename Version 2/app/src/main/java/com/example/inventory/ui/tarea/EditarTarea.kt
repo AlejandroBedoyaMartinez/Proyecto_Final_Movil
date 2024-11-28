@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.inventory.ComposeFileProvider
 import com.example.inventory.R
+import com.example.inventory.VideoPlayer
 import com.example.inventory.saveImageToInternalStorage
 import com.example.inventory.ui.nota.FullScreenImageScreen
 
@@ -66,6 +68,9 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
     LaunchedEffect(id) {
         viewModelTarea.getTarea(id)
     }
+    val configuration = LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp > 600
+
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -237,6 +242,13 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
             )
         )
 
+        val videoUriList = remember { mutableStateListOf<Uri?>() }
+        val videoUriListNuevas = remember { mutableStateListOf<Uri?>() }
+        LaunchedEffect(viewModelTarea.tarea.videos) {
+            videoUriList.clear()
+            videoUriList.addAll(viewModelTarea.tarea.videos.map { Uri.parse(it) })
+        }
+
         val imageUriList = remember { mutableStateListOf<Uri?>() }
         val imageUriListNuevas = remember { mutableStateListOf<Uri?>() }
         LaunchedEffect(viewModelTarea.tarea.imagenes) {
@@ -277,6 +289,40 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
             }
         )
 
+        val videoLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CaptureVideo(),
+            onResult = {
+                videoUriListNuevas.add(imageUri)
+            }
+        )
+        val videoPicker = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                imageUri = uri
+                videoUriListNuevas.add(imageUri)
+            }
+        )
+
+        val todasVideos = remember { mutableStateListOf<Uri?>() }
+        todasVideos.addAll(videoUriList)
+        todasVideos.addAll(videoUriListNuevas)
+        for (uri in todasVideos) {
+            if (uri != null && !uri.toString().equals("") ){
+                Box(
+                    Modifier
+                        .width(300.dp)
+                        .height(300.dp)
+                ) {
+                    VideoPlayer(
+                        videoUri = uri!!,
+                        onDelete = {
+                            videoUriList.remove(uri)
+                        }
+                    )
+                }
+            }
+        }
+        todasVideos.clear()
 
         var fullScreenImageUri by remember { mutableStateOf<Uri?>(null) }
         var isDeleteDialogVisible by remember { mutableStateOf(false) }
@@ -375,6 +421,50 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
 
         Spacer(modifier = Modifier.size(10.dp))
         val context = LocalContext.current
+
+        Row (
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .padding(bottom = if (isTablet) 40.dp else 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ){
+
+            Button(
+                onClick = {
+                    val uri = ComposeFileProvider.getImageUri(context)
+                    videoLauncher.launch(uri)
+                    imageUri = uri
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(
+                    text = "Tomar video",
+                    fontSize = 13.sp,
+                    color = Color.Black
+                )
+            }
+
+            Button(
+                onClick = {
+                    videoPicker.launch("video/*")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(
+                    text = "Adjuntar video",
+                    fontSize = 13.sp,
+                    color = Color.Black
+                )
+            }
+        }
         Row (
             modifier = Modifier
                 .padding(vertical = 10.dp),
@@ -434,7 +524,19 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                         }
                         val todasLasImagenes = (imagenesGuardadas + nuevasImagenesGuardadas).toSet().toList()
 
-                        viewModelTarea.editTarea(todasLasImagenes)
+
+                        val nuevosVideosGuardados: List<String> = videoUriListNuevas.mapNotNull { uri ->
+                            uri?.let {
+                                saveImageToInternalStorage(context, it)
+                            }
+                        }
+
+                        val videosGuardados: List<String> = videoUriList.mapNotNull { uri ->
+                            uri?.toString()
+                        }
+                        val todosLosVideos = (videosGuardados + nuevosVideosGuardados).toSet().toList()
+
+                        viewModelTarea.editTarea(todasLasImagenes,todosLosVideos)
 
                         viewModelTarea.limpiarVariables()
                         imageUriList.clear()

@@ -15,5 +15,6 @@ data class tareaEntity(
     val fechaFin:String,
     val recordar:Boolean,
     val hecho:Boolean,
-    val imagenes: List<String> = emptyList()
+    val imagenes: List<String> = emptyList(),
+    val videos: List<String> = emptyList()
 )

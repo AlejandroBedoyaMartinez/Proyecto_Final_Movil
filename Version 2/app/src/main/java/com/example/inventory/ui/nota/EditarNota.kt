@@ -275,6 +275,7 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                     hasImage = success
                 }
             )
+
             val videoLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.CaptureVideo(),
                 onResult = {

@@ -102,7 +102,11 @@ fun tareasScreen(navHostController: NavHostController, viewModelTarea: ViewModel
                             onCheckedChange = { check ->
                                 tareas[it].hecho = check
                                 viewModelTarea.editCheck(tareas[it])
-                                navHostController.navigate("tareas")
+                                navHostController.navigate("tareas") {
+                                    popUpTo("home") { inclusive = false }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             },
                             navHostController,
                             viewModelTarea

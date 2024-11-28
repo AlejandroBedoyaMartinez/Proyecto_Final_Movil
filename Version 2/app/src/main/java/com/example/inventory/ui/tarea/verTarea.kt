@@ -53,6 +53,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.inventory.R
 import com.example.inventory.ui.nota.FullScreenImageScreen
+import com.example.inventory.verVideoPlayer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -245,6 +246,26 @@ fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:In
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
                 )
             )
+
+            val videoUriList = remember { mutableStateListOf<Uri?>() }
+            LaunchedEffect(viewModelTarea.tarea.videos) {
+                videoUriList.clear()
+                videoUriList.addAll(viewModelTarea.tarea.videos.map { Uri.parse(it) })
+            }
+            for (uri in videoUriList) {
+                if (uri != null && !uri.toString().equals("") ){
+                    Box(
+                        Modifier
+                            .width(300.dp)
+                            .height(300.dp)
+                    ) {
+                        verVideoPlayer(
+                            videoUri = uri!!
+                        )
+                    }
+                }
+            }
+
             val imageUriList = remember { mutableStateListOf<Uri?>() }
 
             LaunchedEffect(viewModelTarea.tarea.imagenes) {

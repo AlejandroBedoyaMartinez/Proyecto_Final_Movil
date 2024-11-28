@@ -13,5 +13,6 @@ data class Tarea(
     val fechaFin:String,
     val recordar:Boolean,
     var hecho:Boolean,
-    val imagenes: List<String> = emptyList()
+    val imagenes: List<String> = emptyList(),
+    val videos: List<String> = emptyList()
 )

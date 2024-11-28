@@ -475,7 +475,15 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                                 saveImageToInternalStorage(context, uri)
                             }
                         }
-                        viewModelTarea.savedTarea(imagenes)
+
+                        var videos: List<String> = emptyList()
+
+                        videos = videoUriList.mapNotNull { uri ->
+                            uri?.let {
+                                saveVideoToInternalStorage(context, uri)
+                            }
+                        }
+                        viewModelTarea.savedTarea(imagenes,videos)
                         viewModelNota.limpiarVariables()
                         navController.navigate("tareas") {
                             popUpTo("home") { inclusive = false }
