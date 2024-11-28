@@ -253,7 +253,7 @@ fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:In
             }
 
             for (uri in imageUriList) {
-                if (uri != null) {
+                if (uri != null && !uri.toString().equals("") ){
                     Box(
                         Modifier
                             .width(230.dp)

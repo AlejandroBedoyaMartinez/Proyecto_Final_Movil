@@ -293,7 +293,7 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
             todas.addAll(imageUriList)
             todas.addAll(imageUriListNuevas)
             for (uri in todas) {
-                if (uri != null) {
+                if (uri != null && !uri.toString().equals("") ){
                     Box(
                         Modifier
                             .width(230.dp)
@@ -439,7 +439,11 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                         viewModelTarea.limpiarVariables()
                         imageUriList.clear()
                         imageUriListNuevas.clear()
-                        navController.navigate("tareas")
+                        navController.navigate("tareas") {
+                            popUpTo("home") { inclusive = false }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

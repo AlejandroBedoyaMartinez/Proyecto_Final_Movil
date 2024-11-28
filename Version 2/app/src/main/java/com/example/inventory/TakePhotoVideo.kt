@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -99,7 +101,7 @@ fun ImagePicker(
                 contentDescription = "Selected image",
             )
             }
-            if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
+            //if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
         }
 
         Column(
@@ -145,7 +147,11 @@ fun ImagePicker(
 }
 
 @Composable
-fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
+fun VideoPlayer(
+    videoUri: Uri,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    onDelete: () -> Unit // Acción para eliminar el video
+) {
     val context = LocalContext.current
     val exoPlayer = remember {
         SimpleExoPlayer.Builder(context).build().apply {
@@ -153,8 +159,45 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
             prepare()
         }
     }
-    val playbackState = exoPlayer
-    val isPlaying = playbackState?.isPlaying ?: false
+    val isPlaying = exoPlayer.isPlaying
+
+    Box(modifier = modifier) {
+        // Player View
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).apply {
+                    player = exoPlayer
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Delete Button
+        IconButton(
+            onClick = { onDelete() },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Delete Video",
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun verVideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxSize()) {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        SimpleExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUri))
+            prepare()
+        }
+    }
 
     AndroidView(
         factory = { context ->
@@ -165,23 +208,4 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
         modifier = modifier
     )
 
-    IconButton(
-        onClick = {
-            if (isPlaying) {
-                exoPlayer.pause()
-            } else {
-                exoPlayer.play()
-            }
-        },
-        modifier = Modifier
-            //.align(Alignment.BottomEnd)
-            .padding(16.dp)
-    ) {
-        Icon(
-            imageVector = if (isPlaying) Icons.Filled.Refresh else Icons.Filled.PlayArrow,
-            contentDescription = if (isPlaying) "Pause" else "Play",
-            tint = Color.White,
-            modifier = Modifier.size(48.dp)
-        )
-    }
 }

@@ -16,7 +16,8 @@ class notaRepository(
                         descripcion = entity.descripcion,
                         cuerpo = entity.cuerpo,
                         texto = entity.texto,
-                        imagenes = entity.imagenes
+                        imagenes = entity.imagenes,
+                        videos = entity.videos
                     )
                 }
             }
@@ -31,7 +32,8 @@ class notaRepository(
                     descripcion = entity.descripcion,
                     cuerpo = entity.cuerpo,
                     texto = entity.texto,
-                    imagenes = entity.imagenes
+                    imagenes = entity.imagenes,
+                    videos = entity.videos
                 )
             }
     }
@@ -44,7 +46,8 @@ class notaRepository(
             descripcion = nota.descripcion,
             cuerpo = nota.cuerpo,
             texto = nota.texto,
-            imagenes = nota.imagenes
+            imagenes = nota.imagenes,
+            videos = nota.videos
         )
         notaDao.insert(entity)
     }
@@ -56,7 +59,8 @@ class notaRepository(
             descripcion = nota.descripcion,
             cuerpo = nota.cuerpo,
             texto = nota.texto,
-            imagenes = nota.imagenes
+            imagenes = nota.imagenes,
+            videos = nota.videos
         )
         notaDao.delete(entity)
     }
@@ -68,7 +72,8 @@ class notaRepository(
             descripcion = nota.descripcion,
             cuerpo = nota.cuerpo,
             texto = nota.texto,
-            imagenes = nota.imagenes
+            imagenes = nota.imagenes,
+            videos = nota.videos
         )
         notaDao.update(entity)
     }

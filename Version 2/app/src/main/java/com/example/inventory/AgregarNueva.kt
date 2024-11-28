@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -204,6 +205,7 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
         )
 
         val imageUriList = remember { mutableStateListOf<Uri?>() }
+        val videoUriList = remember { mutableStateListOf<Uri?>() }
 
         var uri : Uri? = null
         // 1
@@ -237,6 +239,37 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             }
         )
 
+        val videoLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CaptureVideo(),
+            onResult = {
+                videoUriList.add(imageUri)
+            }
+        )
+        val videoPicker = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                imageUri = uri
+                videoUriList.add(imageUri)
+            }
+        )
+
+        for (uri in videoUriList) {
+            if (uri != null && !uri.toString().equals("") ){
+                Box(
+                    Modifier
+                        .width(300.dp)
+                        .height(300.dp)
+                ) {
+                    VideoPlayer(
+                        videoUri = uri!!,
+                        onDelete = {
+                            videoUriList.remove(uri)
+                        }
+                    )
+                }
+
+            }
+        }
         val context = LocalContext.current
 
 
@@ -252,7 +285,7 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             )
         } else {
             for (uri in imageUriList) {
-                if (uri != null) {
+                if (uri != null && !uri.toString().equals("") ){
                     Box(
                         Modifier
                             .width(230.dp)
@@ -328,6 +361,50 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                     }
                 }
             )
+        }
+
+        Row (
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .padding(bottom = if (isTablet) 40.dp else 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ){
+
+            Button(
+                onClick = {
+                    val uri = ComposeFileProvider.getImageUri(context)
+                    videoLauncher.launch(uri)
+                    imageUri = uri
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(
+                    text = "Tomar video",
+                    fontSize = 13.sp,
+                    color = Color.Black
+                )
+            }
+
+            Button(
+                onClick = {
+                    videoPicker.launch("video/*")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(
+                    text = "Adjuntar video",
+                    fontSize = 13.sp,
+                    color = Color.Black
+                )
+            }
         }
         Row (
             modifier = Modifier
@@ -423,7 +500,14 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                             }
                         }
 
-                        viewModelNota.savedNota(imagenes)
+                        var videos: List<String> = emptyList()
+
+                        videos = videoUriList.mapNotNull { uri ->
+                            uri?.let {
+                                saveVideoToInternalStorage(context, uri)
+                            }
+                        }
+                        viewModelNota.savedNota(imagenes,videos)
 
 
                         viewModelNota.limpiarVariables()
@@ -457,6 +541,24 @@ fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
     val contentResolver = context.contentResolver
     val inputStream = contentResolver.openInputStream(uri)
     val fileName = "image_${System.currentTimeMillis()}.jpg"
+    val file = File(context.filesDir, fileName)
+
+    return try {
+        val outputStream = file.outputStream()
+        inputStream?.copyTo(outputStream)
+        inputStream?.close()
+        outputStream.close()
+        file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun saveVideoToInternalStorage(context: Context, uri: Uri): String? {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri)
+    val fileName = "video_${System.currentTimeMillis()}.mp4" // Cambia la extensión si es necesario
     val file = File(context.filesDir, fileName)
 
     return try {

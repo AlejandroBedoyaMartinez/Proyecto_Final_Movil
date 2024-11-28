@@ -11,5 +11,6 @@ data class notaEntity(
     val descripcion:String,
     val cuerpo:String,
     val texto:String,
-    val imagenes: List<String> = emptyList()
+    val imagenes: List<String> = emptyList(),
+    val videos: List<String> = emptyList()
 )

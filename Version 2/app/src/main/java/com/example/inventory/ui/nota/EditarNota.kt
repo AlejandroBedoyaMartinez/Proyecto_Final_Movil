@@ -227,6 +227,15 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
                 )
             )
+
+            val videoUriList = remember { mutableStateListOf<Uri?>() }
+            val videoUriListNuevas = remember { mutableStateListOf<Uri?>() }
+            LaunchedEffect(viewModelNota.nota.videos) {
+                videoUriList.clear()
+                videoUriList.addAll(viewModelNota.nota.videos.map { Uri.parse(it) })
+            }
+
+
             val imageUriList = remember { mutableStateListOf<Uri?>() }
             val imageUriListNuevas = remember { mutableStateListOf<Uri?>() }
             LaunchedEffect(viewModelNota.nota.imagenes) {
@@ -266,6 +275,40 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                     hasImage = success
                 }
             )
+            val videoLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.CaptureVideo(),
+                onResult = {
+                    videoUriListNuevas.add(imageUri)
+                }
+            )
+            val videoPicker = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent(),
+                onResult = { uri ->
+                    imageUri = uri
+                    videoUriListNuevas.add(imageUri)
+                }
+            )
+
+                val todasVideos = remember { mutableStateListOf<Uri?>() }
+                todasVideos.addAll(videoUriList)
+                todasVideos.addAll(videoUriListNuevas)
+                for (uri in todasVideos) {
+                    if (uri != null && !uri.toString().equals("") ){
+                        Box(
+                            Modifier
+                                .width(300.dp)
+                                .height(300.dp)
+                        ) {
+                            VideoPlayer(
+                                videoUri = uri!!,
+                                onDelete = {
+                                    videoUriList.remove(uri)
+                                }
+                            )
+                        }
+                    }
+                }
+                todasVideos.clear()
 
 
             var fullScreenImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -366,6 +409,49 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
             Spacer(modifier = Modifier.size(10.dp))
             val context = LocalContext.current
 
+            Row (
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .padding(bottom = if (isTablet) 40.dp else 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ){
+
+                Button(
+                    onClick = {
+                        val uri = ComposeFileProvider.getImageUri(context)
+                        videoLauncher.launch(uri)
+                        imageUri = uri
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.LightGray
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(
+                        text = "Tomar video",
+                        fontSize = 13.sp,
+                        color = Color.Black
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        videoPicker.launch("video/*")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.LightGray
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(
+                        text = "Adjuntar video",
+                        fontSize = 13.sp,
+                        color = Color.Black
+                    )
+                }
+            }
             Row(
                 modifier = Modifier
                     .padding(vertical = 10.dp)
@@ -422,12 +508,28 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                                 uri?.toString()
                             }
                             val todasLasImagenes = (imagenesGuardadas + nuevasImagenesGuardadas).toSet().toList()
-                            viewModelNota.editNota(todasLasImagenes)
+
+                            val nuevosVideosGuardados: List<String> = videoUriListNuevas.mapNotNull { uri ->
+                                uri?.let {
+                                    saveImageToInternalStorage(context, it)
+                                }
+                            }
+
+                            val videosGuardados: List<String> = videoUriList.mapNotNull { uri ->
+                                uri?.toString()
+                            }
+                            val todosLosVideos = (videosGuardados + nuevosVideosGuardados).toSet().toList()
+
+                            viewModelNota.editNota(todasLasImagenes,todosLosVideos)
 
                             viewModelNota.limpiarVariables()
                             imageUriList.clear()
                             imageUriListNuevas.clear()
-                            navController.navigate("notas")
+                            navController.navigate("notas") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
