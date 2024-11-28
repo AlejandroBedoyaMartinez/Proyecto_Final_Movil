@@ -157,12 +157,13 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
             modifier = Modifier
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            /*colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+             */
         )
 
 
@@ -199,12 +200,13 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                 .height(100.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            /*colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
             )
+             */
         )
         TextField(
             value = viewModelNota.descripcionCuerpo.value, onValueChange = { viewModelNota.descripcionCuerpo.value = it},
@@ -215,12 +217,12 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+           /* colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
         TextField(
             value = viewModelNota.texto.value, onValueChange = { viewModelNota.texto.value = it},
@@ -229,12 +231,12 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                 .height(230.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            /*colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
 
         val imageUriList = remember { mutableStateListOf<Uri?>() }

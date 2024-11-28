@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -96,12 +95,12 @@ fun verNota(navController: NavController, viewModelNota: viewModelNota, id: Int)
                 modifier = Modifier
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = textFieldColors(
+                /*colors = textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
             )
             Spacer(modifier = Modifier.fillMaxWidth().size(10.dp))
             TextField(
@@ -113,12 +112,12 @@ fun verNota(navController: NavController, viewModelNota: viewModelNota, id: Int)
                     .height(100.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = textFieldColors(
+                /*colors = textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
             )
             TextField(
                 value = viewModelNota.descripcionCuerpo.value,
@@ -130,12 +129,12 @@ fun verNota(navController: NavController, viewModelNota: viewModelNota, id: Int)
                     .padding(top = 10.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = textFieldColors(
+                /*colors = textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
             )
             TextField(
                 value = viewModelNota.texto.value,
@@ -146,12 +145,12 @@ fun verNota(navController: NavController, viewModelNota: viewModelNota, id: Int)
                     .height(250.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = textFieldColors(
+               /* colors = textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
             )
 
             val videoUriList = remember { mutableStateListOf<Uri?>() }

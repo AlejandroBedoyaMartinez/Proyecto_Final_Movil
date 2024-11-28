@@ -102,11 +102,7 @@ fun tareasScreen(navHostController: NavHostController, viewModelTarea: ViewModel
                             onCheckedChange = { check ->
                                 tareas[it].hecho = check
                                 viewModelTarea.editCheck(tareas[it])
-                                navHostController.navigate("tareas") {
-                                    popUpTo("home") { inclusive = false }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                navHostController.navigate("tareas")
                             },
                             navHostController,
                             viewModelTarea
@@ -302,11 +298,11 @@ fun BuscarText(
             .padding(16.dp),
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        /*colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.surface,
             unfocusedBorderColor = MaterialTheme.colorScheme.surface,
             cursorColor = MaterialTheme.colorScheme.surface,
-        ),
+        ),*/
         textStyle = TextStyle(color = MaterialTheme.colorScheme.surface)
     )
 }

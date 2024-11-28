@@ -38,7 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -245,12 +244,12 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                 .height(100.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
+            /*colors = textFieldColors(
                  containerColor  = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
         TextField(
             value = viewModelTarea.descripcionCuerpo.value, onValueChange = { viewModelTarea.descripcionCuerpo.value = it},
@@ -260,12 +259,12 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                 .padding(top = 10.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
+            /*colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
         TextField(
             value = viewModelTarea.texto.value, onValueChange = { viewModelTarea.texto.value = it},
@@ -274,12 +273,12 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                 .height(220.dp)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = textFieldColors(
+            /*colors = textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
 
         val videoUriList = remember { mutableStateListOf<Uri?>() }

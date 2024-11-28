@@ -156,18 +156,16 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                 .padding(textFieldPadding)
                 .background(Color.White)
                 .border(BorderStroke(1.dp, Color.Black)),
-            colors = TextFieldDefaults.textFieldColors(
+            /*colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 focusedTextColor = MaterialTheme.colorScheme.surface,
                 cursorColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-            )
+            )*/
         )
         Spacer(modifier = Modifier
             .fillMaxWidth()
             .size(10.dp))
-
-
 
 
         if(islandscape) {
@@ -193,12 +191,12 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                             .padding(textFieldPadding)
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
-                        colors = TextFieldDefaults.textFieldColors(
+                        /*colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             focusedTextColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.surface,
                             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                        )
+                        )*/
                     )
                 }
 
@@ -219,12 +217,12 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                             .padding(top = 10.dp)
                             .background(Color.White)
                             .border(BorderStroke(1.dp, Color.Black)),
-                        colors = TextFieldDefaults.textFieldColors(
+                        /*colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             focusedTextColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.surface,
                             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                        )
+                        )*/
                     )
 
 
@@ -243,12 +241,12 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                     .padding(textFieldPadding)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = TextFieldDefaults.textFieldColors(
+               /* colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
 
             )
 
@@ -260,12 +258,12 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
                     .height(250.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-                colors = TextFieldDefaults.textFieldColors(
+                /*colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = MaterialTheme.colorScheme.surface,
                     cursorColor = MaterialTheme.colorScheme.surface,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )
+                )*/
             )
 
             val videoUriList = remember { mutableStateListOf<Uri?>() }

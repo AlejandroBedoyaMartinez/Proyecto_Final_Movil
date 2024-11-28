@@ -80,6 +80,7 @@ dependencies {
 
     //Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    implementation("androidx.compose.material3:material3-window-size-class-android:1.3.1")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
@@ -92,4 +93,7 @@ dependencies {
 
     // Coil. Para cargar imagenes de manera asyncrona
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
+
 }
