@@ -3,7 +3,6 @@ package com.example.inventory
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,16 +18,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -59,24 +54,62 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.inventory.dataNota.Nota
 import com.example.inventory.dataTarea.Tarea
 import com.example.inventory.ui.nota.FullScreenImageScreen
 import com.example.inventory.ui.nota.viewModelNota
 import com.example.inventory.ui.tarea.PosponerTarea
 import com.example.inventory.ui.tarea.ViewModelTarea
 import java.io.File
-
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,viewModelTarea: ViewModelTarea){
 
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    var cameraPermissionGranted by remember { mutableStateOf(false) }
+    var storagePermissionGranted by remember { mutableStateOf(false) }
+
+    // Request permissions launcher
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            cameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
+            storagePermissionGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+        }
+    )
+
+    // Check permissions at startup
+    LaunchedEffect(Unit) {
+        cameraPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        storagePermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Observe lifecycle to request permissions
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                cameraPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                storagePermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     BackHandler {
             navController.popBackStack()
     }
     var posponer by remember { mutableStateOf(true) }
-    val context = LocalContext.current
 
 
     val configuration = LocalConfiguration.current
@@ -372,9 +405,18 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
 
             Button(
                 onClick = {
-                    val uri = ComposeFileProvider.getImageUri(context)
-                    videoLauncher.launch(uri)
-                    imageUri = uri
+                    if (cameraPermissionGranted && storagePermissionGranted) {
+                        val uri = ComposeFileProvider.getImageUri(context)
+                        videoLauncher.launch(uri)
+                        imageUri = uri
+                    } else {
+                        permissionsLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            )
+                        )
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
@@ -391,8 +433,13 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
 
             Button(
                 onClick = {
-                    videoPicker.launch("video/*")
-                },
+                    if (storagePermissionGranted) {
+                        videoPicker.launch("video/*")
+                    } else {
+                        permissionsLauncher.launch(
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        )
+                    }                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
                 ),
@@ -415,9 +462,17 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
 
             Button(
                 onClick = {
-                    uri = ComposeFileProvider.getImageUri(context)
-                    //imageUri = uri
-                    cameraLauncher.launch(uri!!)
+                    if (cameraPermissionGranted && storagePermissionGranted) {
+                        uri = ComposeFileProvider.getImageUri(context)
+                        cameraLauncher.launch(uri!!)
+                    } else {
+                        permissionsLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            )
+                        )
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
@@ -434,8 +489,13 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
 
             Button(
                 onClick = {
-                    imagePicker.launch("image/*")
-                },
+                    if (storagePermissionGranted) {
+                        imagePicker.launch("image/*")
+                    } else {
+                        permissionsLauncher.launch(
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        )
+                    }                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray
                 ),

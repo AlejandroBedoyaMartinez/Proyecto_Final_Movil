@@ -1,6 +1,8 @@
 package com.example.inventory.ui.nota
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
@@ -40,6 +42,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -52,9 +55,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.inventory.ComposeFileProvider
@@ -68,7 +75,40 @@ import java.io.OutputStream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:Int){
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
+    var cameraPermissionGranted by remember { mutableStateOf(false) }
+    var storagePermissionGranted by remember { mutableStateOf(false) }
+
+    // Request permissions launcher
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            cameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
+            storagePermissionGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+        }
+    )
+
+    // Check permissions at startup
+    LaunchedEffect(Unit) {
+        cameraPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        storagePermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Observe lifecycle to request permissions
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                cameraPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                storagePermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     LaunchedEffect(id) {
         viewModelNota.getNota(id)
     }
@@ -419,9 +459,18 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
 
                 Button(
                     onClick = {
-                        val uri = ComposeFileProvider.getImageUri(context)
-                        videoLauncher.launch(uri)
-                        imageUri = uri
+                        if (cameraPermissionGranted && storagePermissionGranted) {
+                            val uri = ComposeFileProvider.getImageUri(context)
+                            videoLauncher.launch(uri)
+                            imageUri = uri
+                        } else {
+                            permissionsLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                )
+                            )
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.LightGray
@@ -438,8 +487,13 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
 
                 Button(
                     onClick = {
-                        videoPicker.launch("video/*")
-                    },
+                        if (storagePermissionGranted) {
+                            videoPicker.launch("video/*")
+                        } else {
+                            permissionsLauncher.launch(
+                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            )
+                        }                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.LightGray
                     ),
@@ -462,9 +516,17 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
 
                 Button(
                     onClick = {
-                        uri = ComposeFileProvider.getImageUri(context)
-                        //imageUri = uri
-                        cameraLauncher.launch(uri!!)
+                        if (cameraPermissionGranted && storagePermissionGranted) {
+                            uri = ComposeFileProvider.getImageUri(context)
+                            cameraLauncher.launch(uri!!)
+                        } else {
+                            permissionsLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                )
+                            )
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.LightGray
@@ -481,8 +543,13 @@ fun editarNota(navController: NavController, viewModelNota: viewModelNota, id:In
 
                 Button(
                     onClick = {
-                        imagePicker.launch("image/*")
-                    },
+                        if (storagePermissionGranted) {
+                            imagePicker.launch("image/*")
+                        } else {
+                            permissionsLauncher.launch(
+                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            )
+                        }                       },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.LightGray
                     ),
