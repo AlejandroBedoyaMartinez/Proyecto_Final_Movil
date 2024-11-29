@@ -17,6 +17,8 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import androidx.room.Room
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.example.inventory.ui.theme.Proyecto_FinalTheme
 import com.example.inventory.dataNota.notaDb
 import com.example.inventory.dataNota.notaRepository
@@ -25,8 +27,10 @@ import com.example.inventory.dataTarea.tareaRepository
 import com.example.inventory.ui.nota.viewModelNota
 import com.example.inventory.ui.tarea.ViewModelTarea
 
+
 class MainActivity : ComponentActivity() {
     //crear el canal
+
     val channelID = "tareas_channel"
     val channelName = "Notificaciones de Tareas"
 
@@ -60,6 +64,7 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         checkNotificationPermission()
+
 
         val dbNota= Room.databaseBuilder(this, notaDb::class.java,"nota_db").build()
         val daoNota=dbNota.dao

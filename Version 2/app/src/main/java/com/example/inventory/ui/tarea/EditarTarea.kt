@@ -1,9 +1,11 @@
 package com.example.inventory.ui.tarea
 
 import android.Manifest
+import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -29,11 +31,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -234,6 +240,101 @@ fun editarTarea(navController: NavController,viewModelTarea: ViewModelTarea,id:I
                         fontSize = 13.5.sp
                     )
                 }
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            // Botón para agregar una nueva hora
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                IconButton(onClick = {
+                    val calendar = Calendar.getInstance()
+                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                    val minute = calendar.get(Calendar.MINUTE)
+
+                    TimePickerDialog(
+                        context,
+                        { _, selectedHour, selectedMinute ->
+                            val nuevaHora = String.format("%02d:%02d", selectedHour, selectedMinute)
+                            if(viewModelTarea.hora.size <= 6) {
+                                viewModelTarea.hora.add(nuevaHora)
+                            }else{
+                                Toast.makeText(context,
+                                    context.getString(R.string.maximo_7_recordatorios), Toast.LENGTH_SHORT).show()
+                            }
+
+                        },
+                        hour,
+                        minute,
+                        true
+                    ).show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.LockClock,
+                        contentDescription = "Seleccionar hora"
+                    )
+                }
+            }
+
+            // Lista de horas programadas
+            if (viewModelTarea.hora.isNotEmpty()) {
+                Text(text = "Horas programadas:")
+                viewModelTarea.hora.forEachIndexed { index, hora ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = hora,
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(onClick = {
+                            // Editar la hora
+                            val calendar = Calendar.getInstance()
+                            val hour = hora.split(":")[0].toInt()
+                            val minute = hora.split(":")[1].toInt()
+
+                            TimePickerDialog(
+                                context,
+                                { _, selectedHour, selectedMinute ->
+                                    val horaEditada = String.format("%02d:%02d", selectedHour, selectedMinute)
+                                    viewModelTarea.hora[index] = horaEditada
+                                },
+                                hour,
+                                minute,
+                                true
+                            ).show()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Editar hora"
+                            )
+                        }
+                        IconButton(onClick = {
+                            // Eliminar la hora
+                            viewModelTarea.hora.removeAt(index)
+                            viewModelTarea.cancelarNotificacion(viewModelTarea.workerId[index])
+                            viewModelTarea.workerId = viewModelTarea.workerId - viewModelTarea.workerId[index]
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Eliminar hora"
+                            )
+                        }
+                    }
+                }
+            } else {
+                Text(text = "No hay horas programadas aún.")
             }
         }
         Spacer(modifier = Modifier.size(5.dp))

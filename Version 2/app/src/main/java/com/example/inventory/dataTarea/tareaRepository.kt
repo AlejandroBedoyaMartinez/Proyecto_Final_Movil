@@ -22,7 +22,9 @@ class tareaRepository(
                         recordar = entity.recordar,
                         hecho = entity.hecho,
                         imagenes =  entity.imagenes,
-                        videos =  entity.videos
+                        videos =  entity.videos,
+                        horas =  entity.horas,
+                        workersId = entity.workersId
                     )
                 }
             }
@@ -42,7 +44,9 @@ class tareaRepository(
                     recordar = entity.recordar,
                     hecho = entity.hecho,
                     imagenes =  entity.imagenes,
-                    videos =  entity.videos
+                    videos =  entity.videos,
+                    horas =  entity.horas,
+                    workersId = entity.workersId
                 )
             }
     }
@@ -60,7 +64,9 @@ class tareaRepository(
             recordar = tarea.recordar,
             hecho = tarea.hecho,
             imagenes = tarea.imagenes,
-            videos =  tarea.videos
+            videos =  tarea.videos,
+            horas =  tarea.horas,
+            workersId = tarea.workersId
 
         )
         tareaDao.insert(entity)
@@ -78,7 +84,9 @@ class tareaRepository(
             recordar = tarea.recordar,
             hecho = tarea.hecho,
             imagenes = tarea.imagenes,
-            videos =  tarea.videos
+            videos =  tarea.videos,
+            horas =  tarea.horas,
+            workersId = tarea.workersId
         )
         tareaDao.delete(entity)
     }
@@ -95,7 +103,9 @@ class tareaRepository(
             recordar = tarea.recordar,
             hecho = tarea.hecho,
             imagenes = tarea.imagenes,
-            videos =  tarea.videos
+            videos =  tarea.videos,
+            horas =  tarea.horas,
+            workersId = tarea.workersId
         )
         tareaDao.update(entity)
     }

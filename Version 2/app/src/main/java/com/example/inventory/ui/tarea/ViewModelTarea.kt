@@ -3,6 +3,7 @@ package com.example.inventory.ui.tarea
 import android.icu.util.Calendar
 import android.provider.ContactsContract.Data
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,17 +31,21 @@ class ViewModelTarea(
     var texto = mutableStateOf("")
     var fechaInicio = mutableStateOf("")
     var fechaFin = mutableStateOf("")
-    var hora = mutableStateOf("")
+    var hora = mutableStateListOf("")
     var recordar = mutableStateOf(false)
     var hecho = mutableStateOf(false)
     private val _tareas: MutableStateFlow<List<Tarea>> = MutableStateFlow(emptyList())
     var tareas: StateFlow<List<Tarea>> = _tareas
     var tarea: Tarea = Tarea(0,"","","","","","",false,false)
 
+    val Horas: List<String> = hora.filter { it.isNotEmpty() }.toList()
+    var workerId: List<String> = emptyList()
+
     init {
         viewModelScope.launch {
             tareaRepository.getTareas().collect { tareaList ->
                 _tareas.value = tareaList
+                hora.clear()
             }
         }
         programarNotificacionDiaria()
@@ -66,6 +71,9 @@ class ViewModelTarea(
                 fechaFin.value = it.fechaFin
                 recordar.value = it.recordar
                 hecho.value = it.hecho
+                hora.clear()
+                hora.addAll(it.horas)
+                workerId = it.workersId
                 tarea  = it
             }
         }
@@ -73,47 +81,55 @@ class ViewModelTarea(
 
     fun savedTarea(
         imagenes: List<String>,
-        videos: List<String>) {
-        val tarea = Tarea(
-            titulo = titulo.value,
-            descripcion = descripcion.value,
-            cuerpo = descripcionCuerpo.value,
-            texto = texto.value,
-            fechaIncio = fechaInicio.value,
-            fechaFin = fechaFin.value,
-            recordar = recordar.value,
-            hecho = false,
-            imagenes = imagenes,
-            videos = videos
-        )
-
+        videos: List<String>
+    ) {
         viewModelScope.launch {
-            tareaRepository.insertTarea(tarea)
+            for (hr in hora) {
+                if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
+                    val dueDateMillis = convertirFechaYHoraAMillis(tarea.fechaFin, hr)
+                    if (dueDateMillis != null && dueDateMillis > System.currentTimeMillis()) {
+                        val delay = dueDateMillis - System.currentTimeMillis()
+                        val id = programarWorker(
+                            delay = delay,
+                            titulo = "Recordatorio de tarea",
+                            mensaje = "No olvides completar la tarea '${tarea.titulo}' a la hora programada."
+                        )
+                        workerId = workerId + id.toString()
+                    }
+                }
 
-            // Programar notificación a la hora específica
-            if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
-                val dueDateMillis = convertirFechaYHoraAMillis(tarea.fechaFin, hora.value)
-                if (dueDateMillis != null && dueDateMillis > System.currentTimeMillis()) {
-                    val delay = dueDateMillis - System.currentTimeMillis()
-                  val workerid =  programarWorker(
-                        delay = delay,
-                        titulo = "Recordatorio de tarea",
-                        mensaje = "No olvides completar la tarea '${tarea.titulo}' a la hora programada."
+                val dueDateMillis = convertirFechaAMillis(tarea.fechaFin)
+                val hoy = SimpleDateFormat(
+                    "dd/MM/yyyy",
+                    Locale.getDefault()
+                ).format(System.currentTimeMillis())
+                val fechaTarea =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(dueDateMillis ?: 0)
+
+                if (tarea.recordar && hoy == fechaTarea) {
+                    programarWorker(
+                        delay = 0,
+                        titulo = "Tarea para hoy",
+                        mensaje = "La tarea '${tarea.titulo}' debe completarse hoy."
                     )
                 }
             }
-
-            val dueDateMillis = convertirFechaAMillis(tarea.fechaFin)
-            val hoy = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(System.currentTimeMillis())
-            val fechaTarea = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(dueDateMillis ?: 0)
-
-            if (tarea.recordar && hoy == fechaTarea) {
-                programarWorker(
-                    delay = 0,
-                    titulo = "Tarea para hoy",
-                    mensaje = "La tarea '${tarea.titulo}' debe completarse hoy."
-                )
-            }
+            val Horas: List<String> = hora.filter { it.isNotEmpty() }.toList()
+            val tarea = Tarea(
+                titulo = titulo.value,
+                descripcion = descripcion.value,
+                cuerpo = descripcionCuerpo.value,
+                texto = texto.value,
+                fechaIncio = fechaInicio.value,
+                fechaFin = fechaFin.value,
+                recordar = recordar.value,
+                hecho = false,
+                imagenes = imagenes,
+                videos = videos,
+                horas = Horas,
+                workersId = workerId
+            )
+            tareaRepository.insertTarea(tarea)
         }
     }
 
@@ -126,7 +142,7 @@ class ViewModelTarea(
             Log.e("Notificacion", "Error al cancelar notificación con ID $workerId", e)
         }
     }
-    
+
     fun convertirFechaYHoraAMillis(fecha: String, hora: String): Long? {
         return try {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
@@ -159,21 +175,53 @@ class ViewModelTarea(
 
     fun editTarea(imagenes:List<String>,videos:List<String>)
     {
-        val tareaActualizar= Tarea(
-            id = tarea.id,
-            titulo = titulo.value,
-            descripcion = descripcion.value,
-            cuerpo = descripcionCuerpo.value,
-            texto = texto.value,
-            fechaIncio = fechaInicio.value,
-            fechaFin = fechaFin.value,
-            recordar = recordar.value,
-            hecho = hecho.value,
-            imagenes = imagenes,
-            videos = videos
-        )
         viewModelScope.launch {
-            tareaRepository.editTarea(tareaActualizar)
+            for (hr in hora) {
+                if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
+                    val dueDateMillis = convertirFechaYHoraAMillis(tarea.fechaFin, hr)
+                    if (dueDateMillis != null && dueDateMillis > System.currentTimeMillis()) {
+                        val delay = dueDateMillis - System.currentTimeMillis()
+                        val id = programarWorker(
+                            delay = delay,
+                            titulo = "Recordatorio de tarea",
+                            mensaje = "No olvides completar la tarea '${tarea.titulo}' a la hora programada."
+                        )
+                        workerId = workerId + id.toString()
+                    }
+                }
+
+                val dueDateMillis = convertirFechaAMillis(tarea.fechaFin)
+                val hoy = SimpleDateFormat(
+                    "dd/MM/yyyy",
+                    Locale.getDefault()
+                ).format(System.currentTimeMillis())
+                val fechaTarea =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(dueDateMillis ?: 0)
+
+                if (tarea.recordar && hoy == fechaTarea) {
+                    programarWorker(
+                        delay = 0,
+                        titulo = "Tarea para hoy",
+                        mensaje = "La tarea '${tarea.titulo}' debe completarse hoy."
+                    )
+                }
+            }
+            val Horas: List<String> = hora.filter { it.isNotEmpty() }.toList()
+            val tarea = Tarea(
+                titulo = titulo.value,
+                descripcion = descripcion.value,
+                cuerpo = descripcionCuerpo.value,
+                texto = texto.value,
+                fechaIncio = fechaInicio.value,
+                fechaFin = fechaFin.value,
+                recordar = recordar.value,
+                hecho = false,
+                imagenes = imagenes,
+                videos = videos,
+                horas = Horas,
+                workersId = workerId
+            )
+            tareaRepository.editTarea(tarea)
         }
     }
 
@@ -214,6 +262,8 @@ class ViewModelTarea(
         fechaFin.value = ""
         recordar.value = false
         hecho.value = false
+        hora.clear()
+        workerId = emptyList()
     }
 
     fun programarNotificacionDiaria() {

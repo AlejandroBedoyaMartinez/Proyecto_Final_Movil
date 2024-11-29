@@ -9,9 +9,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.inventory.R
 import com.example.inventory.dataTarea.Tarea
+import okhttp3.internal.concurrent.Task
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +46,7 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
 
         var fechaInicio by remember { mutableStateOf("") }
         var fechaFin by remember { mutableStateOf("") }
+        var recordar by remember { mutableStateOf(false) }
 
         val datePickerDialogInicio = android.app.DatePickerDialog(
             context,
@@ -165,7 +170,6 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
 
                 }
 
-
                 Row(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier
@@ -173,45 +177,106 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                         .padding(horizontal = 16.dp)
                 ) {
                     Checkbox(
-                        checked = viewModelTarea.recordar.value,
-                        onCheckedChange = { viewModelTarea.recordar.value = it}
+                        checked = recordar,
+                        onCheckedChange = { recordar = it}
                     )
                     Text(text = stringResource(R.string.recordarme),Modifier.align(Alignment.CenterVertically))
                 }
 
-                var selectedTime by remember { mutableStateOf("") }
-
-                Row (
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ){
-                    IconButton(onClick = {
-                        val calendar = Calendar.getInstance()
-                        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                        val minute = calendar.get(Calendar.MINUTE)
+                        .padding(16.dp)
+                ) {
+                    // Botón para agregar una nueva hora
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                    ) {
+                        IconButton(onClick = {
+                            val calendar = Calendar.getInstance()
+                            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                            val minute = calendar.get(Calendar.MINUTE)
 
-                        TimePickerDialog(
-                            context,
-                            { _, selectedHour, selectedMinute ->
-                                selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-                            },
-                            hour,
-                            minute,
-                            true
-                        ).show()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.LockClock,
-                            contentDescription = "Seleccionar hora"
-                        )
+                            TimePickerDialog(
+                                context,
+                                { _, selectedHour, selectedMinute ->
+                                    val nuevaHora = String.format("%02d:%02d", selectedHour, selectedMinute)
+                                    if(viewModelTarea.hora.size <= 6) {
+                                        viewModelTarea.hora.add(nuevaHora)
+                                    }else{
+                                        Toast.makeText(context,
+                                            context.getString(R.string.maximo_7_recordatorios), Toast.LENGTH_SHORT).show()
+                                    }
+
+                                },
+                                hour,
+                                minute,
+                                true
+                            ).show()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.LockClock,
+                                contentDescription = "Seleccionar hora"
+                            )
+                        }
                     }
-                    if (selectedTime.isNotEmpty()) {
-                        Text(text = "Hora seleccionada: $selectedTime")
+
+                    // Lista de horas programadas
+                    if (viewModelTarea.hora.isNotEmpty()) {
+                        Text(text = "Horas programadas:")
+                        viewModelTarea.hora.forEachIndexed { index, hora ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = hora,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                IconButton(onClick = {
+                                    // Editar la hora
+                                    val calendar = Calendar.getInstance()
+                                    val hour = hora.split(":")[0].toInt()
+                                    val minute = hora.split(":")[1].toInt()
+
+                                    TimePickerDialog(
+                                        context,
+                                        { _, selectedHour, selectedMinute ->
+                                            val horaEditada = String.format("%02d:%02d", selectedHour, selectedMinute)
+                                            viewModelTarea.hora[index] = horaEditada
+                                        },
+                                        hour,
+                                        minute,
+                                        true
+                                    ).show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = "Editar hora"
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    // Eliminar la hora
+                                    viewModelTarea.hora.removeAt(index)
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Delete,
+                                        contentDescription = "Eliminar hora"
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Text(text = "No hay horas programadas aún.")
                     }
                 }
+
 
 
                 Row (
@@ -224,12 +289,15 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                         onClick =
                         {
                             if(viewModelTarea.tituloVacio()){
-                                if(fechaInicio !="" && fechaFin != ""){
-                                    viewModelTarea.fechaInicio.value = fechaInicio
-                                    viewModelTarea.fechaFin.value = fechaFin
+                                    if (fechaInicio != "" && fechaFin != "") {
+                                        viewModelTarea.fechaInicio.value = fechaInicio
+                                        viewModelTarea.fechaFin.value = fechaFin
+
+                                    }
+                                    viewModelTarea.recordar.value = recordar
+                                if(viewModelTarea.recordar.value){
+                                    onTareaGuardada()
                                 }
-                                 viewModelTarea.hora.value =selectedTime
-                                onTareaGuardada()
                             }else{
                                 Toast.makeText(context,
                                     context.getString(R.string.escribe_un_titulo), Toast.LENGTH_SHORT).show()

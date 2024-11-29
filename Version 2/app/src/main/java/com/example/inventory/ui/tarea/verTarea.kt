@@ -1,5 +1,6 @@
 package com.example.inventory.ui.tarea
 
+import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -26,10 +27,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -195,6 +199,39 @@ fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:In
                     }
                 }
             }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                // Botón para agregar una nueva hora
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    if (viewModelTarea.hora.isNotEmpty()) {
+                        Text(text = "Horas programadas:")
+                        viewModelTarea.hora.forEachIndexed { index, hora ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = hora,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                        }
+                    } else {
+                        Text(text = "No hay horas programadas aún.")
+                    }
+                }
+            }
             Spacer(modifier = Modifier.size(5.dp))
             TextField(
                 value = viewModelTarea.descripcion.value,
@@ -222,12 +259,12 @@ fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:In
                     .padding(top = 10.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-               /* colors = textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    focusedTextColor = MaterialTheme.colorScheme.surface,
-                    cursorColor = MaterialTheme.colorScheme.surface,
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )*/
+                /* colors = textFieldColors(
+                     containerColor = MaterialTheme.colorScheme.primary,
+                     focusedTextColor = MaterialTheme.colorScheme.surface,
+                     cursorColor = MaterialTheme.colorScheme.surface,
+                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
+                 )*/
             )
             TextField(
                 value = viewModelTarea.texto.value,
@@ -238,12 +275,12 @@ fun verTarea(navController: NavController, viewModelTarea: ViewModelTarea, id:In
                     .height(220.dp)
                     .background(Color.White)
                     .border(BorderStroke(1.dp, Color.Black)),
-               /* colors = textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    focusedTextColor = MaterialTheme.colorScheme.surface,
-                    cursorColor = MaterialTheme.colorScheme.surface,
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
-                )*/
+                /* colors = textFieldColors(
+                     containerColor = MaterialTheme.colorScheme.primary,
+                     focusedTextColor = MaterialTheme.colorScheme.surface,
+                     cursorColor = MaterialTheme.colorScheme.surface,
+                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface
+                 )*/
             )
 
             val videoUriList = remember { mutableStateListOf<Uri?>() }

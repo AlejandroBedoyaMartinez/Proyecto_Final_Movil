@@ -546,7 +546,7 @@ fun AgregarNueva(navController: NavController, viewModelNota: viewModelNota,view
                             }
                         }
                         viewModelTarea.savedTarea(imagenes,videos)
-                        viewModelNota.limpiarVariables()
+                        viewModelTarea.limpiarVariables()
                         navController.navigate("tareas") {
                             popUpTo("home") { inclusive = false }
                             launchSingleTop = true

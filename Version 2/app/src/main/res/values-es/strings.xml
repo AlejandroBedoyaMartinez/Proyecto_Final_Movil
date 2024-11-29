@@ -25,4 +25,6 @@
     <string name="eliminar">Eliminar</string>
     <string name="escribe_un_titulo">Escribe un titulo</string>
     <string name="ver">Ver</string>
+    <string name="maximo_7_recordatorios">Maximo 7 recordatorios</string>
+    <string name="elige_una_fecha">Elige una fecha</string>
 </resources>

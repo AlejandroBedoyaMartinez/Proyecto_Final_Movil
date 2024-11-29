@@ -26,4 +26,6 @@
     <string name="eliminar">Delete</string>
     <string name="escribe_un_titulo">Write a title</string>
     <string name="ver">View</string>
+    <string name="maximo_7_recordatorios">Maximo 7 recordatorios</string>
+    <string name="elige_una_fecha">Elige una fecha</string>
 </resources>
