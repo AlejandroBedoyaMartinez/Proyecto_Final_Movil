@@ -1,5 +1,6 @@
 package com.example.inventory.ui.tarea
 
+import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -9,13 +10,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -175,6 +179,41 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                     Text(text = stringResource(R.string.recordarme),Modifier.align(Alignment.CenterVertically))
                 }
 
+                var selectedTime by remember { mutableStateOf("") }
+
+                Row (
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ){
+                    IconButton(onClick = {
+                        val calendar = Calendar.getInstance()
+                        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                        val minute = calendar.get(Calendar.MINUTE)
+
+                        TimePickerDialog(
+                            context,
+                            { _, selectedHour, selectedMinute ->
+                                selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                            },
+                            hour,
+                            minute,
+                            true
+                        ).show()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.LockClock,
+                            contentDescription = "Seleccionar hora"
+                        )
+                    }
+                    if (selectedTime.isNotEmpty()) {
+                        Text(text = "Hora seleccionada: $selectedTime")
+                    }
+                }
+
+
                 Row (
                     Modifier
                         .padding(horizontal = 16.dp)
@@ -189,6 +228,7 @@ fun PosponerTarea(onDismiss: () -> Unit,viewModelTarea: ViewModelTarea,tarea: Ta
                                     viewModelTarea.fechaInicio.value = fechaInicio
                                     viewModelTarea.fechaFin.value = fechaFin
                                 }
+                                 viewModelTarea.hora.value =selectedTime
                                 onTareaGuardada()
                             }else{
                                 Toast.makeText(context,

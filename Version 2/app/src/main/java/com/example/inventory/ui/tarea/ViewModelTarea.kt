@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.example.inventory.notifications.NotificationWorker
+import java.util.UUID
 
 class ViewModelTarea(
     private val tareaRepository: tareaRepository
@@ -29,6 +30,7 @@ class ViewModelTarea(
     var texto = mutableStateOf("")
     var fechaInicio = mutableStateOf("")
     var fechaFin = mutableStateOf("")
+    var hora = mutableStateOf("")
     var recordar = mutableStateOf(false)
     var hecho = mutableStateOf(false)
     private val _tareas: MutableStateFlow<List<Tarea>> = MutableStateFlow(emptyList())
@@ -69,9 +71,10 @@ class ViewModelTarea(
         }
     }
 
-    fun savedTarea(imagenes:List<String>,videos:List<String>)
-    {
-        val tarea= Tarea(
+    fun savedTarea(
+        imagenes: List<String>,
+        videos: List<String>) {
+        val tarea = Tarea(
             titulo = titulo.value,
             descripcion = descripcion.value,
             cuerpo = descripcionCuerpo.value,
@@ -81,30 +84,62 @@ class ViewModelTarea(
             recordar = recordar.value,
             hecho = false,
             imagenes = imagenes,
-            videos =  videos
+            videos = videos
         )
+
         viewModelScope.launch {
             tareaRepository.insertTarea(tarea)
-            programarNotificacion(tarea) // al las 4 horas ante
 
+            // Programar notificación a la hora específica
+            if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
+                val dueDateMillis = convertirFechaYHoraAMillis(tarea.fechaFin, hora.value)
+                if (dueDateMillis != null && dueDateMillis > System.currentTimeMillis()) {
+                    val delay = dueDateMillis - System.currentTimeMillis()
+                  val workerid =  programarWorker(
+                        delay = delay,
+                        titulo = "Recordatorio de tarea",
+                        mensaje = "No olvides completar la tarea '${tarea.titulo}' a la hora programada."
+                    )
+                }
+            }
 
-            // Notificacin inmediata si vence hoy
             val dueDateMillis = convertirFechaAMillis(tarea.fechaFin)
             val hoy = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(System.currentTimeMillis())
             val fechaTarea = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(dueDateMillis ?: 0)
 
-            //  notificación inmediata
             if (tarea.recordar && hoy == fechaTarea) {
                 programarWorker(
-                    delay = 0, // Notificación inmediata
+                    delay = 0,
                     titulo = "Tarea para hoy",
-                    mensaje = "La tarea '${tarea.titulo}' debe completarse hoy :0"
+                    mensaje = "La tarea '${tarea.titulo}' debe completarse hoy."
                 )
             }
         }
     }
 
-    fun programarWorker(delay: Long, titulo: String, mensaje: String) {
+    fun cancelarNotificacion(workerId: String) {
+        try {
+            val uuid = UUID.fromString(workerId)
+            WorkManager.getInstance().cancelWorkById(uuid)
+            Log.d("Notificacion", "Notificación con ID $workerId cancelada correctamente")
+        } catch (e: Exception) {
+            Log.e("Notificacion", "Error al cancelar notificación con ID $workerId", e)
+        }
+    }
+    
+    fun convertirFechaYHoraAMillis(fecha: String, hora: String): Long? {
+        return try {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val dateTime = "$fecha $hora"
+            val date = dateFormat.parse(dateTime)
+            date?.time
+        } catch (e: Exception) {
+            Log.e("Notificacion", "Error al convertir fecha y hora: $fecha $hora", e)
+            null
+        }
+    }
+
+    fun programarWorker(delay: Long, titulo: String, mensaje: String): UUID {
         val data = androidx.work.Data.Builder()
             .putString("titulo", titulo)
             .putString("mensaje", mensaje)
@@ -115,9 +150,11 @@ class ViewModelTarea(
             .setInputData(data)
             .build()
 
-        WorkManager.getInstance().enqueue(workRequest)
-    }
+        val workManager = WorkManager.getInstance()
+        workManager.enqueue(workRequest)
 
+        return workRequest.id
+    }
 
 
     fun editTarea(imagenes:List<String>,videos:List<String>)
@@ -177,30 +214,6 @@ class ViewModelTarea(
         fechaFin.value = ""
         recordar.value = false
         hecho.value = false
-    }
-
-    fun programarNotificacion(tarea: Tarea) {
-        try {
-            if (tarea.recordar && tarea.fechaFin.isNotEmpty()) {
-                val dueDateMillis = convertirFechaAMillis(tarea.fechaFin) ?: return
-                val now = System.currentTimeMillis()
-
-                // Notificación 4 horas antes
-                val cuatroHorasAntes = dueDateMillis - TimeUnit.HOURS.toMillis(4)
-                if (cuatroHorasAntes > now) {
-                    val delayCuatroHoras = cuatroHorasAntes - now
-                    programarWorker(
-                        delay = delayCuatroHoras,
-                        titulo = "Tarea pendiente",
-                        mensaje = "La tarea '${tarea.titulo}' se vence en 4 horas."
-                    )
-                }
-
-                // Notificación para entregar hoy ya está en savedTarea
-            }
-        } catch (e: Exception) {
-            Log.e("Notificacion", "Error al programar notificaciones", e)
-        }
     }
 
     fun programarNotificacionDiaria() {
@@ -283,7 +296,4 @@ class ViewModelTarea(
             null
         }
     }
-
-    //1. pedir permiso para mostrar notificaciones, a la hoora de querer guardar una tarea y esta tenga habilitado el check de recordarme.
 }
-

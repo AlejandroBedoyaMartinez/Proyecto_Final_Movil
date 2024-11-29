@@ -95,5 +95,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     implementation ("androidx.work:work-runtime-ktx:2.8.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.5.1")
+
 
 }
